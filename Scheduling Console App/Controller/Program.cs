@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using MySql.Data.MySqlClient;
+using Scheduling_Console_App.Data;
 using static Scheduling_Console_App.Program;
 
 namespace Scheduling_Console_App
@@ -22,8 +23,13 @@ namespace Scheduling_Console_App
         {
 
             string connectionString = ConfigurationManager.ConnectionStrings[dbConnStrngKeyNm].ConnectionString;
+            
+            var dbconn = new DatabaseConnector(connectionString);
+            dbconn?.Open();
 
-            Console.WriteLine(connectionString);
+            Console.WriteLine(dbconn);
+
+            dbconn.Connection = new MySqlConnection(connectionString);
         }
     }
 }
