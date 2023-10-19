@@ -7,7 +7,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SchedulingLibrary;
+using Scheduling_Library;
 
 namespace Scheduling_Console_App
 {

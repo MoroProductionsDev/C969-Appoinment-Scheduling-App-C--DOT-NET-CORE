@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scheduling Console App", "S
 		{00B66119-66C5-4A0C-AAD1-CF83C73B5302} = {00B66119-66C5-4A0C-AAD1-CF83C73B5302}
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchedulingLibrary", "..\SchedulingLibrary\SchedulingLibrary.csproj", "{00B66119-66C5-4A0C-AAD1-CF83C73B5302}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scheduling Library", "..\SchedulingLibrary\Scheduling Library.csproj", "{00B66119-66C5-4A0C-AAD1-CF83C73B5302}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
