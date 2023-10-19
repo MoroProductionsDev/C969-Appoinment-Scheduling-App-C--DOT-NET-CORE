@@ -61,7 +61,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SchedulingLibrary\Scheduling Library.csproj">
+    <ProjectReference Include="..\Scheduling Library\Scheduling Library.csproj">
       <Project>{00b66119-66c5-4a0c-aad1-cf83c73b5302}</Project>
       <Name>Scheduling Library</Name>
     </ProjectReference>
