@@ -17,7 +17,7 @@ namespace Scheduling_Library.Model.structure
             public const int City = 4;
             public const int Country = 5;
         }
-        public class ClientDatabaseSchema : DatabaseSchema
+        public class ClientDatabaseSchema : DbSchema
         {
             public override String dbName { get => _dbName; }
             public override Dictionary<int, string> TableNames { get => _tableNames; }

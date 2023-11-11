@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Scheduling_Library.Model.structure
 {
-    public abstract class DatabaseSchema 
+    public abstract class DbSchema 
     {
         public abstract String dbName { get; }
         public abstract Dictionary<int, string> TableNames { get; }

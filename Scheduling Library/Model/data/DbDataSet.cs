@@ -12,9 +12,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using MySql.Data.MySqlClient;
+using Scheduling_Library.Model.database;
+using Scheduling_Library.Model.factory;
 using Scheduling_Library.Model.structure;
 
-namespace Scheduling_Library
+namespace Scheduling_Library.Model.data
 {
     /*
      * Description: This class is use to store the returned fetched value that the
@@ -27,10 +29,10 @@ namespace Scheduling_Library
      * How to use switch statements on system's type.
      * https://stackoverflow.com/questions/43080505/how-to-switch-on-system-type
      */
-    public sealed class DatabaseDataTable
+    public sealed class DbDataSet
     {
-        private readonly IDatabaseConnector dbConnector;
-        private readonly DatabaseSchema dbSchema;
+        private readonly IDbConnector dbConnector;
+        private readonly DbSchema dbSchema;
         private readonly DataSet dataSet;
 
         /*
@@ -43,11 +45,11 @@ namespace Scheduling_Library
          * mutation     It initialize this.DbDataTable property/object based on the [DataTable] reference passed.
          *              It initialize this.reader private field/object based on the [IDataReader] reference passed.  
          */
-        public DatabaseDataTable(in IDatabaseConnector connector, in DatabaseSchema schema)
+        public DbDataSet(in IDbConnector connector, in DbSchema schema)
         {
             this.dbConnector = connector;
             this.dbSchema = schema;
-            this.dataSet = DataInstance.createDataSet();
+            this.dataSet = DataInstance.createDataSet(schema.dbName);
         }
         /*
          * 

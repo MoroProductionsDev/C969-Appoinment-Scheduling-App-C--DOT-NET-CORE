@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Scheduling_Library
+namespace Scheduling_Library.Model.factory
 {
     public static class DataInstance
     {
@@ -28,13 +28,13 @@ namespace Scheduling_Library
          *                                      
          * @return      A instance of a [DataTable].
          */
-        public static DataTable createDataTable()
+        public static DataTable createDataTable(in String dtTableName)
         {
-            return new DataTable();
+            return new DataTable(dtTableName);
         }
 
-        public static DataSet createDataSet() { 
-            return new DataSet(); 
+        public static DataSet createDataSet(in String dtSetName) { 
+            return new DataSet(dtSetName); 
         }
 
         /*
@@ -46,9 +46,9 @@ namespace Scheduling_Library
          *                                      
          * @return      A instance of a [DatabaseDataTable].
          */
-        public static DatabaseDataTable CreateDbDataTable(in IDatabaseConnector databaseConnector, in DatabaseSchema schema)
+        public static DbDataSet CreateDbDataTable(in IDbConnector dbConnector, in DbSchema dbSchema)
         {
-            return new DatabaseDataTable(in databaseConnector, in schema);
+            return new DbDataSet(in dbConnector, in dbSchema);
         }
     }
 }

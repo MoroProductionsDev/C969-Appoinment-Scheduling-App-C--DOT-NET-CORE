@@ -5,13 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Scheduling_Library
+namespace Scheduling_Library.Model.database
 {
     /*
      * Description: This interface is the contract that different database connectors should implement these
      *              properties and behaviors.
      */
-    public interface IDatabaseConnector : IDisposable 
+    public interface IDbConnector : IDisposable 
     {
         ConnectionState ConnectionState { get; }
         IDbDataAdapter DbDataAdapter { get; }

@@ -12,14 +12,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace Scheduling_Library
+namespace Scheduling_Library.Model.database
 {
     /*
      * Description: This class is a wrapper class that handles different objects to succesfully fetch, retrieve
      *              and update data from and to the database.
      *              It expects to implement the [IDatabaseConnector] properties and behaviors.
      */
-    internal sealed class MySqlConnector : IDatabaseConnector
+    internal sealed class MySqlConnector : IDbConnector
     {
         private readonly IDbConnection dbConnection;
 
@@ -41,7 +41,7 @@ namespace Scheduling_Library
          */
         internal MySqlConnector(in Type connectionType, in String connectionString)
         {
-            this.dbConnection = DatabaseInstance.CreateDbConnection(connectionType, connectionString);
+            this.dbConnection = DbInstance.CreateDbConnection(connectionType, connectionString);
         }
 
         /*
@@ -89,7 +89,7 @@ namespace Scheduling_Library
 
             if (this.dbConnection.State.Equals(ConnectionState.Open))
             {
-                dbCommand = DatabaseInstance.CreateDbCommand(commandText, this.dbConnection);
+                dbCommand = DbInstance.CreateDbCommand(commandText, this.dbConnection);
             } else
             {
                 throw new Exception();
@@ -104,7 +104,7 @@ namespace Scheduling_Library
 
             if (this.dbConnection.State.Equals(ConnectionState.Open))
             {
-                this._dbDataAdapter = DatabaseInstance.CreateDbDataAdapter( this.dbConnection);
+                this._dbDataAdapter = DbInstance.CreateDbDataAdapter( this.dbConnection);
             }
             // Excpt
         }

@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
-namespace Scheduling_Library
+namespace Scheduling_Library.Model.factory
 {
     /*
      * Description: This static class applies the S.O.L.I.[D] specially the "D" for "Dependency Inversion".
@@ -27,7 +27,7 @@ namespace Scheduling_Library
      * How to use switch statements on system's type.
      * https://stackoverflow.com/questions/43080505/how-to-switch-on-system-type
      */
-    public static class DatabaseInstance
+    public static class DbInstance
     {
         /*
          * Description: This function creates and returns a new [IDatabaseConnector] object base on the type passed.
@@ -39,9 +39,9 @@ namespace Scheduling_Library
          *                                      
          * @return      A instance of a [IDatabaseConnector].
          */
-        public static IDatabaseConnector CreateDatabaseConnector(Type connectionType, String connectionString)
+        public static IDbConnector CreateDatabaseConnector(Type connectionType, String connectionString)
         {
-            IDatabaseConnector dbConnector = null;
+            IDbConnector dbConnector = null;
             switch(connectionType)
             {
                 case Type _ when typeof(MySqlConnection) == connectionType:
