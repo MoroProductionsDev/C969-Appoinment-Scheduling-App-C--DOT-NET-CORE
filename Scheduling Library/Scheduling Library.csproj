@@ -119,12 +119,14 @@
   <ItemGroup>
     <Compile Include="Model\database\DbConnectionEventArgs.cs" />
     <Compile Include="Model\data\DatabaseDataTable.cs" />
-    <Compile Include="Model\DatabaseInstance.cs" />
-    <Compile Include="Model\DataInstance.cs" />
+    <Compile Include="Model\factory\DatabaseInstance.cs" />
+    <Compile Include="Model\factory\DataInstance.cs" />
     <Compile Include="Model\database\IDatabaseConnector.cs" />
     <Compile Include="Model\database\MySqlConnector.cs" />
+    <Compile Include="Model\structure\DbStructure.cs" />
+    <Compile Include="Model\structure\DatabaseSchema.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Model\enums\Structures.cs" />
+    <Compile Include="Model\structure\Structures.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

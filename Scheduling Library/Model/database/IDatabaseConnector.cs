@@ -13,12 +13,13 @@ namespace Scheduling_Library
      */
     public interface IDatabaseConnector : IDisposable 
     {
-        IDataReader DbDataReader { get; }
+        ConnectionState ConnectionState { get; }
+        IDbDataAdapter DbDataAdapter { get; }
 
         void OpenConnection();
         void CloseConnection();
-        IDatabaseConnector CreateCommand(string commandText);
+        IDbCommand CreateDbCommand(in string commandText);
+        void CreateDbDataAdapter();
         void Execute();
-        /*Task<IDatabaseConnector> ConnectAsync(string connectionString);*/
     }
 }

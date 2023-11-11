@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Scheduling_Library.Model.structure;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -32,6 +33,10 @@ namespace Scheduling_Library
             return new DataTable();
         }
 
+        public static DataSet createDataSet() { 
+            return new DataSet(); 
+        }
+
         /*
          * Description: This function creates and returns a new [DatabaseDataTable] object base on the
          *              the reference [IDataReader] and the [DataTable] provided..
@@ -41,9 +46,9 @@ namespace Scheduling_Library
          *                                      
          * @return      A instance of a [DatabaseDataTable].
          */
-        public static DatabaseDataTable CreateDbDataTable(IDataReader reader, DataTable dataTable)
+        public static DatabaseDataTable CreateDbDataTable(in IDatabaseConnector databaseConnector, in DatabaseSchema schema)
         {
-            return new DatabaseDataTable(reader, dataTable);
+            return new DatabaseDataTable(in databaseConnector, in schema);
         }
     }
 }

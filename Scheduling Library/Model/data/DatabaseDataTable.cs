@@ -2,11 +2,17 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using MySql.Data.MySqlClient;
+using Scheduling_Library.Model.structure;
 
 namespace Scheduling_Library
 {
@@ -21,10 +27,11 @@ namespace Scheduling_Library
      * How to use switch statements on system's type.
      * https://stackoverflow.com/questions/43080505/how-to-switch-on-system-type
      */
-    public class DatabaseDataTable
+    public sealed class DatabaseDataTable
     {
-        private readonly IDataReader reader;  // Reference to database data reader
-        public DataTable DbDataTable { get; } // Database data table
+        private readonly IDatabaseConnector dbConnector;
+        private readonly DatabaseSchema dbSchema;
+        private readonly DataSet dataSet;
 
         /*
          * Description: Parameterized Constructor
@@ -36,116 +43,151 @@ namespace Scheduling_Library
          * mutation     It initialize this.DbDataTable property/object based on the [DataTable] reference passed.
          *              It initialize this.reader private field/object based on the [IDataReader] reference passed.  
          */
-        public DatabaseDataTable(IDataReader reader, DataTable dataTable)
+        public DatabaseDataTable(in IDatabaseConnector connector, in DatabaseSchema schema)
         {
-            this.DbDataTable = dataTable;
-            this.reader = reader;
+            this.dbConnector = connector;
+            this.dbSchema = schema;
+            this.dataSet = DataInstance.createDataSet();
+        }
+        /*
+         * 
+         */
+        public void Populate()
+        {
+            Stopwatch stopwatch = new Stopwatch();
+
+            //stopwatch.Start();
+            Mapping();
+            // Mapping();
+            //stopwatch.Stop();
+
+            //Console.WriteLine($"nanoseconds: {String.Format("{0:n0}", stopwatch.ElapsedMilliseconds * 1000000)}");
         }
 
-        /*
-         * Description: It creates the [DataTable] that stores data provided by the objects' [IDataReader].
-         */
-        public void Create()
+        private void Mapping()
         {
-            DataColumn[] columns = this.CreateDataColumns();
+            int tableCount = this.dbSchema.TableNames.Count;
+            IDbDataAdapter dbDataAdapter = this.dbConnector.DbDataAdapter;
 
-            this.DbDataTable.Columns.AddRange(columns);
 
-            while (this.reader.Read()) 
+            dbDataAdapter.SelectCommand = this.dbConnector.CreateDbCommand(String.Empty);
+
+            for (var tableIndex = 0; tableIndex < tableCount; ++tableIndex)
             {
-                DataRow row = DbDataTable.NewRow();
-                for (int i = 0; i < this.reader.FieldCount; ++i)
+                string tableName = this.dbSchema.TableNames[tableIndex];
+
+                MapTableAndColumns(in dbDataAdapter, in tableName);
+                AddDataSetTable(in tableName);
+                FillSchema(in dbDataAdapter, in tableName);
+                UpdatePrimaryKeyContraint(tableIndex);
+                Fill(in dbDataAdapter, in tableName);
+            }
+
+            for (var tableIndex = 0; tableIndex < tableCount; ++tableIndex)
+            {
+                CreateRelationsBetween(tableIndex);
+            }
+        }
+
+
+        // https://learn.microsoft.com/en-us/dotnet/api/system.data.dataset?view=net-7.0
+        private void MapTableAndColumns(in IDbDataAdapter dbDataAdapter, in String tableName)
+        {
+            dbDataAdapter.SelectCommand.CommandText = $"SELECT * FROM `{this.dbSchema.dbName}`.`{tableName}`;"; ;
+            ITableMapping tableMapping = dbDataAdapter.TableMappings.Add(tableName, tableName);
+            IDataReader dataReader = dbDataAdapter.SelectCommand.ExecuteReader();
+
+            for (var fieldIdx = 0; fieldIdx < dataReader.FieldCount; ++fieldIdx)
+            {
+                tableMapping.ColumnMappings.Add(dataReader.GetName(fieldIdx), dataReader.GetName(fieldIdx));
+            }
+
+            if (!dataReader.IsClosed)
+            {
+                dataReader.Close();
+            }
+        }
+
+        private void AddDataSetTable(in String tableName)
+        {
+            this.dataSet.Tables.Add(tableName);
+        }
+
+        private void FillSchema(in IDbDataAdapter dbDataAdapter, in String tableName)
+        {
+            ((DbDataAdapter)dbDataAdapter).FillSchema(this.dataSet, SchemaType.Mapped, tableName);
+        }
+
+        private void Fill(in IDbDataAdapter dbDataAdapter, in String tableName)
+        {
+            ((DbDataAdapter)dbDataAdapter).Fill(this.dataSet, tableName);
+        }
+
+        private void UpdatePrimaryKeyContraint(int tableIdx)
+        {
+            this.dataSet.Tables[tableIdx].Constraints[0].ConstraintName = $"{this.dataSet.Tables[tableIdx]}_PK";
+        }
+
+        private void CreateRelationsBetween(int tableIdx)
+        {
+            int fkKeyCount = this.dbSchema.ForeignKeys[tableIdx].Length;
+
+            for (var fkIdx = 0; fkIdx < fkKeyCount; ++fkIdx)
+            {
+                string pkTableName = this.dbSchema.FKTables[tableIdx][fkIdx];
+                string fkColumnName = this.dbSchema.ForeignKeys[tableIdx][fkIdx];
+
+                if (String.Empty == pkTableName)
                 {
-                    string columnName = DbDataTable.Columns[i].ColumnName;
-                    Type columnType = DbDataTable.Columns[i].DataType;
-
-                    var valueAsStr = this.reader.GetString(i);
-
-                    if (typeof(String) != columnType)
-                    {
-                        row[columnName] = this.ParseData(columnType, valueAsStr);
-                    } else
-                    {
-                        row[columnName] = valueAsStr;
-                    }
+                    continue;
                 }
-                this.DbDataTable.Rows.Add(row);
-            }
 
-            this.DbDataTable.Load(this.reader); // metadata including the table's name
-            this.DbDataTable.PrimaryKey = new DataColumn[] { this.DbDataTable.Columns[0] }; // primary key as an array of [DataColumn]
-                                                                                            // allowing composite primary keys to be made.
+                // Create a DataRelation to link the two tables.
+                DataColumn primaryKey = this.dataSet.Tables[pkTableName].PrimaryKey[0];
+                DataColumn foreignKey = this.dataSet.Tables[tableIdx].Columns[fkColumnName];
+
+                string tableName = dbSchema.TableNames[tableIdx];
+                this.dataSet.Relations.Add(new DataRelation($"{tableName}_FK-{fkColumnName}", primaryKey, foreignKey));
+            }
         }
 
-        /*
-         * Description: It creates a [DataColumn] that stores each column provided by the reader's then adds it to the [DataTable] object.
-         */
-        private DataColumn[] CreateDataColumns()
+        private Task FillDataAsync(in IDbDataAdapter dbDataAdapter, in DataSet dataSet)
         {
-            DataColumn[] columns = new DataColumn[this.reader.FieldCount];
-            for (int i = 0; i < this.reader.FieldCount; ++i)
+            TaskCompletionSource<int> taskCompletionSource = new TaskCompletionSource<int>();
+            try
             {
-                var column= new DataColumn();
-                column.DataType = ConvertSqlType(this.reader.GetDataTypeName(i));
-                column.ColumnName = this.reader.GetName(i);
-                column.ReadOnly = true;
-                column.AllowDBNull = false;
-                column.Unique = (0 == i) ? true: false; // primary key
 
-                columns[i] = column; // add the single column to the columns array
+                int result = dbDataAdapter.Fill(dataSet);
+                taskCompletionSource.SetResult(result);
+            }
+            catch (Exception exception)
+            {
+                taskCompletionSource.SetException(exception);
             }
 
-            return columns;
+            return taskCompletionSource.Task;
         }
 
-        /*
-         * Description: It returns a System.Typ based on the provided database type return by the reader, stored as a string.
-         */
-        private Type ConvertSqlType(string dbTypeName)
+        private Task SetSchemaAsync(in IDbDataAdapter dbDataAdapter, in DataSet dataSet)
         {
-            Type type = null;
-            switch(dbTypeName)
+            TaskCompletionSource<DataTable[]> taskCompletionSource = new TaskCompletionSource<DataTable[]>();
+            try
             {
-                case SqlTypeName.TinyInt:
-                    type = typeof(Boolean);
-                    break;
-                case SqlTypeName.Int:
-                    type = typeof(Int32);
-                    break;
-                case SqlTypeName.String:
-                    type = typeof(String);
-                    break;
-                case SqlTypeName.DateTime:
-
-                case SqlTypeName.TimeStamp:
-                    type = typeof(DateTime);
-                    break;
+                DataTable[] result = dbDataAdapter.FillSchema(dataSet, SchemaType.Mapped);
+                taskCompletionSource.SetResult(result);
+            }
+            catch (Exception exception)
+            {
+                taskCompletionSource.SetException(exception);
             }
 
-            return type;
+            return taskCompletionSource.Task;
         }
 
-        /*
-         * Description: It parses the string provided based on the column type.
-         */ 
-        private object ParseData(Type actualColumnType, string dataStrValue)
+        /*        
+        private void CreatePrimaryKey(in DataTable table, DbStructure.ClientDatabaseSchema.Table tableEnum)
         {
-            object value = null;
-
-            switch(actualColumnType)
-            {
-                case Type _ when typeof(Int32) == actualColumnType:
-                    value = Int32.Parse(dataStrValue);
-                    break;
-                case Type _ when typeof(Boolean) == actualColumnType:
-                    value = Boolean.Parse(dataStrValue);
-                    break;
-                case Type _ when typeof(DateTime) == actualColumnType:
-                    value = DateTime.Parse(dataStrValue);
-                    break;
-            }
-
-            return value;
-        }
+            table.PrimaryKey = new DataColumn[]{table.Columns[DbStructure.ClientDatabaseSchema.PrimaryKeys[tableEnum]]};
+        }*/
     }
 }

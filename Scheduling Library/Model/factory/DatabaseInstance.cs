@@ -80,24 +80,39 @@ namespace Scheduling_Library
         /*
          * Description: This function creates and returns a new [IDbCommand] object base on the type passed.
          * 
-         * @param       [Type] connectionType       It carries a IDbConnection (Type) that will be use to create the
-         *                                          right object type.
-         *              [String] connectionString   A connection string configuration for the specific
+         * @param       [String] connectionString   A connection string configuration for the specific
          *                                          database type.
-         *                                      
+         *              [IDbConnection] connection       It carries a IDbConnection that will be use to create the
+         *                                               right command based on the connection object.
+         *              
          * @return      A instance of a [IDbCommand].
          */
-        public static IDbCommand CreateDbCommand(Type connectionType, String commandText)
+        public static IDbCommand CreateDbCommand(String commandText, IDbConnection connection)
         {
             IDbCommand dbCommand = null;
-            switch (connectionType)
+            switch (connection?.GetType())
             {
-                case Type _ when typeof(MySqlConnection) == connectionType:
-                    dbCommand = new MySqlCommand(commandText);
+                case Type _ when typeof(MySqlConnection) == connection.GetType():
+                    dbCommand = new MySqlCommand(commandText, (MySqlConnection) connection);
                     break;
             }
 
             return dbCommand;
+        }
+
+        // Set the SqlDataAdapter's SelectCommand.
+        // dbDataAdapter.SelectCommand = this.databaseConnector.CreateDbCommand(commandText).DbCommand;
+        public static IDbDataAdapter CreateDbDataAdapter(IDbConnection connection)
+        {
+            IDbDataAdapter dbDataAdapter = null;
+            switch (connection?.GetType())
+            {
+                case Type _ when typeof(MySqlConnection) == connection.GetType():
+                    dbDataAdapter = new MySqlDataAdapter();
+                    break;
+            }
+
+            return dbDataAdapter;
         }
     }
 }

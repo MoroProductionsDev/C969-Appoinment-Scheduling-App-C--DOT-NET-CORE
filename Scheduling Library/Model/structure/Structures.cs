@@ -19,11 +19,12 @@ namespace Scheduling_Library
         public const string MySql = "MySql.Data.MySqlClient";
     }
 
-    internal static class SqlQueryKeyword
+    public static class DmlSqlKeyword
     {
-        public const string Select = "SELECT";
-        public const string Update = "UPDATE";
-        public const string Delete = "DELETE";
+        public static readonly string[] Select = { "SELECT", "FROM", "WHERE", "ORDER BY"} ;
+        public static readonly string[] Update = { "UPDATE", "SET", "WHERE" };
+        public static readonly string[] Delete = { "DELETE", "FROM", "WHERE" };
+        public static readonly string[] Insert = { "INSERT INTO", "VALUES" };
     }
 
     // https://learn.microsoft.com/en-us/sql/relational-databases/clr-integration-database-objects-types-net-framework/mapping-clr-parameter-data?view=sql-server-ver16&viewFallbackFrom=sql-server-2014&redirectedfrom=MSDN

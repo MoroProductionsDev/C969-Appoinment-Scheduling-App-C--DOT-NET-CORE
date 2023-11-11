@@ -1,13 +1,16 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Data;
 using System.Data.Common;
+using System.Data.Odbc;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Scheduling_Library
 {
@@ -16,13 +19,14 @@ namespace Scheduling_Library
      *              and update data from and to the database.
      *              It expects to implement the [IDatabaseConnector] properties and behaviors.
      */
-    internal class MySqlConnector : IDatabaseConnector
+    internal sealed class MySqlConnector : IDatabaseConnector
     {
         private readonly IDbConnection dbConnection;
-        private IDbCommand dbCommand;
+
+        private IDbCommand _dbCommand;
+        private IDbDataAdapter _dbDataAdapter;
         private bool disposedValue;
 
-        // DataReader that stores the fetched data returned from the database.
         public IDataReader DbDataReader { get; private set; }
 
         /*
@@ -35,7 +39,7 @@ namespace Scheduling_Library
          *                                          
          * mutation    It initialize this.dbConnection object based on the connection type.                                         
          */
-        internal MySqlConnector(Type connectionType, string connectionString)
+        internal MySqlConnector(in Type connectionType, in String connectionString)
         {
             this.dbConnection = DatabaseInstance.CreateDbConnection(connectionType, connectionString);
         }
@@ -62,6 +66,11 @@ namespace Scheduling_Library
             /* ChangedStateEventHandler?.Invoke(this, new DbConnectionEventArgs(_conn));*/
         }
 
+        public ConnectionState ConnectionState
+        {
+            get => this.dbConnection.State;
+        }
+
         /*
          * Description: It attempts to create a database command based on the command string provided.
          * 
@@ -71,35 +80,70 @@ namespace Scheduling_Library
          * 
          * @return      This instance of the class. (Pipeline)
          */
-        public IDatabaseConnector CreateCommand(string commandText)
+        public IDbCommand CreateDbCommand(in String commandText)
         {
-            this.dbCommand?.Dispose();
-            this.dbCommand = null;
+            /*            this._dbCommand?.Dispose();
+                        this._dbCommand = null;*/
 
-            if (this.dbConnection != null && this.dbConnection.State.Equals(ConnectionState.Open))
+            IDbCommand dbCommand = null;
+
+            if (this.dbConnection.State.Equals(ConnectionState.Open))
             {
-                this.dbCommand = DatabaseInstance.CreateDbCommand(typeof(MySqlConnection), commandText);
-                this.dbCommand.Connection = dbConnection;
+                dbCommand = DatabaseInstance.CreateDbCommand(commandText, this.dbConnection);
+            } else
+            {
+                throw new Exception();
             }
-            return this;
+
+            return dbCommand;
         }
+
+        public void CreateDbDataAdapter()
+        {
+            /*IDbDataAdapter dbDataAdapter = null;*/
+
+            if (this.dbConnection.State.Equals(ConnectionState.Open))
+            {
+                this._dbDataAdapter = DatabaseInstance.CreateDbDataAdapter( this.dbConnection);
+            }
+            // Excpt
+        }
+
+        public IDbDataAdapter DbDataAdapter
+        {
+            get
+            {
+                if (null == _dbDataAdapter)
+                {
+                    CreateDbDataAdapter();
+                }
+
+                return _dbDataAdapter;
+            }
+
+            private set
+            {
+                _dbDataAdapter = value;
+            }
+        }
+
 
         /*
          * Description: It execute the database command based on the command text.
          */
         public void Execute()
         {
-            if (this.dbCommand != null)
+            if (this._dbCommand != null)
             {
-                if (this.dbCommand.CommandText.ToUpper().Contains(SqlQueryKeyword.Select))
+                if (this._dbCommand.CommandText.ToUpper().Contains(DmlSqlKeyword.Select[0]))
                 {
                     this.Read();
                 }
-                else if (this.dbCommand.CommandText.ToUpper().Contains(SqlQueryKeyword.Update))
+                else if (this._dbCommand.CommandText.ToUpper().Contains(DmlSqlKeyword.Update[0]))
                 {
                     /*Write();*/
                 }
-                else if (this.dbCommand.CommandText.ToUpper().Contains(SqlQueryKeyword.Delete))
+                else if (this._dbCommand.CommandText.ToUpper().Contains(DmlSqlKeyword.Delete[0]))
                 {
                     /*Write();*/
                 }
@@ -115,12 +159,32 @@ namespace Scheduling_Library
         {
             this.DbDataReader = null;
 
-            if (this.dbCommand != null)
+            if (this._dbCommand != null)
             {
-                this.DbDataReader = dbCommand.ExecuteReader();
+                this.DbDataReader = this._dbCommand.ExecuteReader();
             }
 
             return (this.DbDataReader != null);
+        }
+
+        private int Write()
+        {
+            int affectedRows = 0;
+            if (this._dbCommand != null)
+            {
+
+                this._dbCommand.Transaction = ((MySqlConnection) (this._dbCommand.Connection)).BeginTransaction();
+                try
+                {
+                    affectedRows = this._dbCommand.ExecuteNonQuery();
+                    this._dbCommand.Transaction.Commit();                    
+                }
+                catch(Exception)
+                {
+                    this._dbCommand.Transaction.Rollback();
+                }
+            }
+            return affectedRows;
         }
 
 
@@ -129,7 +193,7 @@ namespace Scheduling_Library
          * 
          * @param:      [Boolean] disposing     N/A
          */
-        protected virtual void Dispose(bool disposing)
+        public void Dispose(bool disposing)
         {
             if (!disposedValue)
             {
@@ -139,16 +203,16 @@ namespace Scheduling_Library
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                this.DbDataReader.Close();
-                this.dbConnection.Close();
+                this.DbDataReader?.Close();
+                this.dbConnection?.Close();
                 
-                this.DbDataReader.Dispose();
-                this.dbCommand.Dispose();
-                this.dbConnection.Dispose();
+                this.DbDataReader?.Dispose();
+                this._dbCommand?.Dispose();
+                this.dbConnection?.Dispose();
 
                 this.DbDataReader = null;
-                this.dbCommand = null;
-                this.dbCommand = null;
+                this._dbCommand = null;
+/*                this.DbCommand = null;*/
                 // TODO: set large fields to null
                 disposedValue = true;
             }
