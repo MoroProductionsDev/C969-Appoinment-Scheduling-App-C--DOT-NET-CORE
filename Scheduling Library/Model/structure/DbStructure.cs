@@ -8,7 +8,7 @@ namespace Scheduling_Library.Model.Structure
 {
     public static class DbStructure
     {
-        private static class ClientSchedule
+        public static class ClientSchedule
         {
             public const int User = 0;
             public const int Appointment = 1;

@@ -8,7 +8,7 @@ using Scheduling_Library.Model.Structure;
 using Scheduling_Library.Model.Data;
 using Scheduling_Library.Model.Database;
 
-namespace Scheduling_Library.Model.factory
+namespace Scheduling_Library.Model.Factory
 {
     public static class DataInstance
     {
