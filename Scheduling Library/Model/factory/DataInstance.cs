@@ -1,12 +1,12 @@
-﻿using Scheduling_Library.Model.structure;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Scheduling_Library.Model.data;
-using Scheduling_Library.Model.database;
+using Scheduling_Library.Model.Structure;
+using Scheduling_Library.Model.Data;
+using Scheduling_Library.Model.Database;
 
 namespace Scheduling_Library.Model.factory
 {

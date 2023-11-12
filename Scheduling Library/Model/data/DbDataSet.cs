@@ -12,11 +12,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using MySql.Data.MySqlClient;
+using Scheduling_Library.Model.Factory;
+using Scheduling_Library.Model.Structure;
+using Scheduling_Library.Model.Database;
 using Scheduling_Library.Model.factory;
-using Scheduling_Library.Model.structure;
-using Scheduling_Library.Model.database;
 
-namespace Scheduling_Library.Model.data
+namespace Scheduling_Library.Model.Data
 {
     /*
      * Description: This class is use to store the returned fetched value that the
@@ -32,7 +33,7 @@ namespace Scheduling_Library.Model.data
     {
         private readonly IDbConnector dbConnector;
         private readonly DbSchema dbSchema;
-        private readonly DataSet dataSet;
+        public DataSet DataSet { get; private set; }
 
         /*
          * Description: Parameterized Constructor
@@ -48,7 +49,7 @@ namespace Scheduling_Library.Model.data
         {
             this.dbConnector = dbConnector;
             this.dbSchema = dbSchema;
-            this.dataSet = DataInstance.createDataSet(dbSchema.dbName);
+            this.DataSet = DataInstance.createDataSet(dbSchema.DbName);
         }
         /*
          * 
@@ -68,7 +69,7 @@ namespace Scheduling_Library.Model.data
         private void Mapping()
         {
             int tableCount = this.dbSchema.TableNames.Count;
-            IDbDataAdapter dbDataAdapter = this.dbConnector.DbDataAdapter;
+            IDbDataAdapter dbDataAdapter = this.dbConnector.DbDtAdapter;
 
 
             dbDataAdapter.SelectCommand = this.dbConnector.CreateDbCommand(String.Empty);
@@ -78,7 +79,7 @@ namespace Scheduling_Library.Model.data
                 string tableName = this.dbSchema.TableNames[tableIndex];
 
                 MapTableAndColumns(in dbDataAdapter, in tableName);
-                AddDataSetTable(in tableName);
+                AddTableToDataSet(in tableName);
                 FillSchema(in dbDataAdapter, in tableName);
                 UpdatePrimaryKeyContraint(tableIndex);
                 Fill(in dbDataAdapter, in tableName);
@@ -86,7 +87,7 @@ namespace Scheduling_Library.Model.data
 
             for (var tableIndex = 0; tableIndex < tableCount; ++tableIndex)
             {
-                CreateRelationsBetween(tableIndex);
+                CreatePrimaryAndForeingKeyRelation(tableIndex);
             }
         }
 
@@ -94,7 +95,7 @@ namespace Scheduling_Library.Model.data
         // https://learn.microsoft.com/en-us/dotnet/api/system.data.dataset?view=net-7.0
         private void MapTableAndColumns(in IDbDataAdapter dbDataAdapter, in String tableName)
         {
-            dbDataAdapter.SelectCommand.CommandText = $"SELECT * FROM `{this.dbSchema.dbName}`.`{tableName}`;"; ;
+            dbDataAdapter.SelectCommand.CommandText = $"SELECT * FROM `{this.dbSchema.DbName}`.`{tableName}`;"; ;
             ITableMapping tableMapping = dbDataAdapter.TableMappings.Add(tableName, tableName);
             IDataReader dataReader = dbDataAdapter.SelectCommand.ExecuteReader();
 
@@ -109,27 +110,27 @@ namespace Scheduling_Library.Model.data
             }
         }
 
-        private void AddDataSetTable(in String tableName)
+        private void AddTableToDataSet(in String tableName)
         {
-            this.dataSet.Tables.Add(tableName);
+            this.DataSet.Tables.Add(tableName);
         }
 
         private void FillSchema(in IDbDataAdapter dbDataAdapter, in String tableName)
         {
-            ((DbDataAdapter)dbDataAdapter).FillSchema(this.dataSet, SchemaType.Mapped, tableName);
+            ((DbDataAdapter)dbDataAdapter).FillSchema(this.DataSet, SchemaType.Mapped, tableName);
         }
 
         private void Fill(in IDbDataAdapter dbDataAdapter, in String tableName)
         {
-            ((DbDataAdapter)dbDataAdapter).Fill(this.dataSet, tableName);
+            ((DbDataAdapter)dbDataAdapter).Fill(this.DataSet, tableName);
         }
 
         private void UpdatePrimaryKeyContraint(int tableIdx)
         {
-            this.dataSet.Tables[tableIdx].Constraints[0].ConstraintName = $"{this.dataSet.Tables[tableIdx]}_PK";
+            this.DataSet.Tables[tableIdx].Constraints[0].ConstraintName = $"{this.DataSet.Tables[tableIdx]}_PK";
         }
 
-        private void CreateRelationsBetween(int tableIdx)
+        private void CreatePrimaryAndForeingKeyRelation(int tableIdx)
         {
             int fkKeyCount = this.dbSchema.ForeignKeys[tableIdx].Length;
 
@@ -144,11 +145,11 @@ namespace Scheduling_Library.Model.data
                 }
 
                 // Create a DataRelation to link the two tables.
-                DataColumn primaryKey = this.dataSet.Tables[pkTableName].PrimaryKey[0];
-                DataColumn foreignKey = this.dataSet.Tables[tableIdx].Columns[fkColumnName];
+                DataColumn primaryKey = this.DataSet.Tables[pkTableName].PrimaryKey[0];
+                DataColumn foreignKey = this.DataSet.Tables[tableIdx].Columns[fkColumnName];
 
                 string tableName = dbSchema.TableNames[tableIdx];
-                this.dataSet.Relations.Add(new DataRelation($"{tableName}_FK-{fkColumnName}", primaryKey, foreignKey));
+                this.DataSet.Relations.Add(new DataRelation($"{tableName}_FK-{fkColumnName}", primaryKey, foreignKey));
             }
         }
 

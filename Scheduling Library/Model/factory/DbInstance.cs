@@ -8,9 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
-using Scheduling_Library.Model.database;
+using Scheduling_Library.Model.Database;
 
-namespace Scheduling_Library.Model.factory
+namespace Scheduling_Library.Model.Factory
 {
     /*
      * Description: This static class applies the S.O.L.I.[D] specially the "D" for "Dependency Inversion".

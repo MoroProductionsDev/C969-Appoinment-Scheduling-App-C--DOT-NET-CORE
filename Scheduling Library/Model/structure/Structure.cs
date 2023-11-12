@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
 
-namespace Scheduling_Library.Model.structure
+namespace Scheduling_Library.Model.Structure
 {
 
     public static class DatabaseType

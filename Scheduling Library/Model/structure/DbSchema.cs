@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Scheduling_Library.Model.structure
+namespace Scheduling_Library.Model.Structure
 {
     public abstract class DbSchema 
     {
-        public abstract String dbName { get; }
+        public abstract String DbName { get; }
         public abstract Dictionary<int, string> TableNames { get; }
         public abstract Dictionary<int, string[]> PrimaryKeys { get; }
         public abstract Dictionary<int, string[]> ForeignKeys { get; }

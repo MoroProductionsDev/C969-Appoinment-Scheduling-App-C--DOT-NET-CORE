@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Scheduling_Library.Model.structure
+namespace Scheduling_Library.Model.Structure
 {
     public static class DbStructure
     {
@@ -19,7 +19,7 @@ namespace Scheduling_Library.Model.structure
         }
         public class ClientDatabaseSchema : DbSchema
         {
-            public override String dbName { get => _dbName; }
+            public override String DbName { get => _dbName; }
             public override Dictionary<int, string> TableNames { get => _tableNames; }
             public override Dictionary<int, string[]> PrimaryKeys { get => _primaryKeys; }
             public override Dictionary<int, string[]> ForeignKeys { get => _foreignKeys; }

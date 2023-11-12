@@ -1,5 +1,4 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Configuration;
@@ -11,10 +10,11 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Scheduling_Library.Model.factory;
-using Scheduling_Library.Model.structure;
+using MySql.Data.MySqlClient;
+using Scheduling_Library.Model.Factory;
+using Scheduling_Library.Model.Structure;
 
-namespace Scheduling_Library.Model.database
+namespace Scheduling_Library.Model.Database
 {
     /*
      * Description: This class is a wrapper class that handles different objects to succesfully fetch, retrieve
@@ -68,7 +68,7 @@ namespace Scheduling_Library.Model.database
             /* ChangedStateEventHandler?.Invoke(this, new DbConnectionEventArgs(_conn));*/
         }
 
-        public ConnectionState ConnectionState
+        public ConnectionState ConnState
         {
             get => this.dbConnection.State;
         }
@@ -111,7 +111,7 @@ namespace Scheduling_Library.Model.database
             // Excpt
         }
 
-        public IDbDataAdapter DbDataAdapter
+        public IDbDataAdapter DbDtAdapter
         {
             get
             {

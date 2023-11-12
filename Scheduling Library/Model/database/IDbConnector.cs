@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Scheduling_Library.Model.database
+namespace Scheduling_Library.Model.Database
 {
     /*
      * Description: This interface is the contract that different database connectors should implement these
@@ -13,8 +14,8 @@ namespace Scheduling_Library.Model.database
      */
     public interface IDbConnector : IDisposable 
     {
-        ConnectionState ConnectionState { get; }
-        IDbDataAdapter DbDataAdapter { get; }
+        ConnectionState ConnState { get; }
+        IDbDataAdapter DbDtAdapter { get; } // named this way to avoid confusion with the [Systen.Data.Common.DbDataAdapter] abstract class
 
         void OpenConnection();
         void CloseConnection();
