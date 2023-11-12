@@ -49,7 +49,9 @@ namespace Scheduling_Console_App
 
             Tester.MappingDatabaseTest(in this.appState);
 
-            ConsoleOutput.ShowTable(this.appState.DbDataSet.DataSet.Tables);
+            //ConsoleOutput.ShowTable(this.appState.DbDataSet.DataSet.Tables);
+
+            Tester.UpdateDatabaseTest(in this.appState);
 
             Tester.CloseAndDisposeDatabaseObject(in this.appState);
         }

@@ -20,11 +20,41 @@ namespace Scheduling_Console_App
             }
         }
 
+        internal static void ShowTable(DataTable dataTable, DataRowCollection dataRows)
+        {
+            foreach (DataRow dtRow in dataRows)
+            {
+                ShowTable(dataTable, dtRow);
+            }
+        }
+
+        internal static void ShowTable(DataTable dataTable, DataRow dataRow)
+        {
+            Console.WriteLine(dataTable.TableName);
+
+            foreach (DataColumn col in dataTable.Columns)
+            {
+                Console.Write("{0,-14}", col.ColumnName);
+            }
+            Console.WriteLine();
+
+            foreach (DataColumn col in dataTable.Columns)
+            {
+                if (col.DataType.Equals(typeof(DateTime)))
+                    Console.Write("{0,-14:d}", dataRow[col]);
+                else if (col.DataType.Equals(typeof(Decimal)))
+                    Console.Write("{0,-14:C}", dataRow[col]);
+                else
+                    Console.Write("{0,-14}", dataRow[col]);
+            }
+            Console.WriteLine();
+        }
+
 
         /*
          * Description: It shows the [DataTable] reference object in a table formated way.
          */
-        private static void ShowTable(DataTable dataTable)
+        internal static void ShowTable(DataTable dataTable)
         {
             Console.WriteLine(dataTable.TableName);
 

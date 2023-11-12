@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Scheduling_Console_App.Controller.State;
+using static Scheduling_Library.Model.Structure.DbStructure;
 
 namespace Scheduling_Console_App.Controller.Test
 {
@@ -15,10 +16,21 @@ namespace Scheduling_Console_App.Controller.Test
             appState.DbDataSet.Populate();
         }
 
-/*        internal static void writingDatabaseTest(in State appState)
+        internal static void UpdateDatabaseTest(in AppState appState) 
         {
-            appState.Connector?.CreateDbCommand(commandText);
-        }*/
+            string tableName = appState.DbSchema.TableNames[ClientSchedule.Customer];
+            string columnName = "customerName";
+            DataTable table = appState.DbDataSet.DataSet.Tables[tableName];
+            DataRow resultRow = table.Select($"{columnName} = 'Raul Rivero'").FirstOrDefault();
+            resultRow[columnName] = "Pedro Navaja";
+
+            ConsoleOutput.ShowTable(table, resultRow);
+        }
+
+        /*        internal static void writingDatabaseTest(in State appState)
+                {
+                    appState.Connector?.CreateDbCommand(commandText);
+                }*/
 
 
         internal static void OpeningDatabaseConnectionTest(in AppState appState)

@@ -15,7 +15,6 @@ using MySql.Data.MySqlClient;
 using Scheduling_Library.Model.Factory;
 using Scheduling_Library.Model.Structure;
 using Scheduling_Library.Model.Database;
-using Scheduling_Library.Model.factory;
 
 namespace Scheduling_Library.Model.Data
 {
