@@ -11,6 +11,8 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Scheduling_Library.Model.factory;
+using Scheduling_Library.Model.structure;
 
 namespace Scheduling_Library.Model.database
 {

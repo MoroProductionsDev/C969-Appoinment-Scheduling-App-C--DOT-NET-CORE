@@ -5,6 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Scheduling_Library.Model.data;
+using Scheduling_Library.Model.database;
 
 namespace Scheduling_Library.Model.factory
 {
@@ -23,11 +25,27 @@ namespace Scheduling_Library.Model.factory
          *              D – Dependency Inversion
          */
 
+
+        /*
+         * Description: This function creates and returns a new [DbDataSet] object base on the
+         *              the reference [IDbConnector] and the [DbSchema] provided..
+         * 
+         * @param       [IDbConnector] dbConnector       It carries a [IDbconnector] instance with data about the database connection.
+         *              [DbSchema] dbSchema       It has information about the database structure.
+         *                                      
+         * @return      A instance of a [DbDataSet].
+         */
+        public static DbDataSet CreateDbDataTable(in IDbConnector dbConnector, in DbSchema dbSchema)
+        {
+            return new DbDataSet(in dbConnector, in dbSchema);
+        }
+
         /*
          * Description: This function creates and returns a new [DataTable] object.
          *                                      
          * @return      A instance of a [DataTable].
          */
+
         public static DataTable createDataTable(in String dtTableName)
         {
             return new DataTable(dtTableName);
@@ -37,18 +55,5 @@ namespace Scheduling_Library.Model.factory
             return new DataSet(dtSetName); 
         }
 
-        /*
-         * Description: This function creates and returns a new [DatabaseDataTable] object base on the
-         *              the reference [IDataReader] and the [DataTable] provided..
-         * 
-         * @param       [IDataReader] reader        It carries a referemce [IDataReader] that will be use catch the fetched data.
-         *              [DataTable] dataTable       It carries a [DataTable] that will be use to stored, updated data from and to the user.
-         *                                      
-         * @return      A instance of a [DatabaseDataTable].
-         */
-        public static DbDataSet CreateDbDataTable(in IDbConnector dbConnector, in DbSchema dbSchema)
-        {
-            return new DbDataSet(in dbConnector, in dbSchema);
-        }
     }
 }

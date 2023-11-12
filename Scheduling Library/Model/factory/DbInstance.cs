@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using Scheduling_Library.Model.database;
 
 namespace Scheduling_Library.Model.factory
 {
@@ -64,7 +65,7 @@ namespace Scheduling_Library.Model.factory
          *                                      
          * @return      A instance of a [IDbConnection].
          */
-        public static IDbConnection CreateDbConnection(Type connectionType, String connectionString)
+        internal static IDbConnection CreateDbConnection(Type connectionType, String connectionString)
         {
             IDbConnection dbConnection = null;
             switch (connectionType)
@@ -87,7 +88,7 @@ namespace Scheduling_Library.Model.factory
          *              
          * @return      A instance of a [IDbCommand].
          */
-        public static IDbCommand CreateDbCommand(String commandText, IDbConnection connection)
+        internal static IDbCommand CreateDbCommand(String commandText, IDbConnection connection)
         {
             IDbCommand dbCommand = null;
             switch (connection?.GetType())
@@ -102,7 +103,7 @@ namespace Scheduling_Library.Model.factory
 
         // Set the SqlDataAdapter's SelectCommand.
         // dbDataAdapter.SelectCommand = this.databaseConnector.CreateDbCommand(commandText).DbCommand;
-        public static IDbDataAdapter CreateDbDataAdapter(IDbConnection connection)
+        internal static IDbDataAdapter CreateDbDataAdapter(IDbConnection connection)
         {
             IDbDataAdapter dbDataAdapter = null;
             switch (connection?.GetType())
