@@ -12,10 +12,19 @@ namespace Scheduling_Console_App
      */
     internal static class ConsoleOutput
     {
+        internal static void ShowTable(DataTableCollection dataTables)
+        {
+            foreach (DataTable dtTable in dataTables)
+            {
+                ShowTable(dtTable);
+            }
+        }
+
+
         /*
          * Description: It shows the [DataTable] reference object in a table formated way.
          */
-        internal static void ShowTable(DataTable dataTable)
+        private static void ShowTable(DataTable dataTable)
         {
             Console.WriteLine(dataTable.TableName);
 
@@ -39,12 +48,6 @@ namespace Scheduling_Console_App
                 Console.WriteLine();
             }
             Console.WriteLine();
-        }
-
-        //
-        internal static void WriteLine(string actionMsg)
-        {
-            Console.WriteLine(actionMsg);
         }
 
         internal static void ShowDataColumnInfo(in DataColumnCollection dataColumns)

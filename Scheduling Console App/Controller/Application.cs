@@ -10,22 +10,32 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Scheduling_Library;
 using System.ComponentModel;
-using Scheduling_Library.Model.structure;
-using Scheduling_Library.Model.factory;
-using Scheduling_Library.Model.data;
-using Scheduling_Library.Model.database;
+using Scheduling_Library.Model.Structure;
+using Scheduling_Library.Model.Factory;
+using Scheduling_Library.Model.Data;
+using Scheduling_Library.Model.Database;
+using Scheduling_Console_App.Controller.Config;
+using Scheduling_Console_App.Controller.State;
+using Scheduling_Console_App.Controller.Factory;
+using Scheduling_Console_App.Controller.Test;
 
 namespace Scheduling_Console_App
 {
     internal sealed class Application
     {
-
-        private Type dbConnType;
-        private string connectionString;
+        private readonly AppState appState;
+        private readonly IDbConfiguration dbConfig;
 
         // The "connectionString" element's name int the "App.config" file that will be use to connect
         // to the correct database data.
-        private const string dbConnStrngKeyNm = "MySqlDBConn";
+
+        public Application(in String providerName)
+        {
+            this.dbConfig = AppFactory.BuildDatabaseConfiguration(providerName);
+            this.appState = new AppState();
+            this.appState.DbConnector = AppFactory.BuildDatabaseConnector(dbConfig);
+            this.appState.DbDataSet = AppFactory.BuildDatabaseDataSet(this.appState);
+        }
 
         /*
              * Description: Runs the application.
@@ -33,93 +43,15 @@ namespace Scheduling_Console_App
              * @param:      [String]    providerName        identify which providername will be use for the database connection
              *                                              stored in the configuration setting.
         */
-        public void Run(string providerName)
-        {
-            if (!IdentifyRequiredFields(providerName))
-            {
-                return;
-            }
+        public void Run()
+        {            
+            Tester.OpeningDatabaseConnectionTest(in this.appState);
 
-            DbSchema clientSchema = new DbStructure.ClientDatabaseSchema();
+            Tester.MappingDatabaseTest(in this.appState);
 
-            IDbConnector connector = BuildConnector();
+            ConsoleOutput.ShowTable(this.appState.DbDataSet.DataSet.Tables);
 
- 
-            OpeningDatabaseConnectionTest(connector);
-
-            /*ReadingDatabaseTest(connector, commandText);*/
-
-            MappingDatabaseTest(in connector, clientSchema);
-
-            CloseAndDisposeDatabaseObj(connector);
-        }
-
-        private void MappingDatabaseTest(in IDbConnector connector, in DbSchema dbSchema)
-        {
-            DbDataSet databaseDataTable = new DbDataSet(in connector, in dbSchema);
-
-            databaseDataTable.Populate();
-        }
-
-        private void writingDatabaseTest(IDbConnector connector, String commandText)
-        {
-            connector?.CreateDbCommand(commandText);
-        }
-
-
-        private void OpeningDatabaseConnectionTest(IDbConnector connector)
-        {
-            connector?.OpenConnection();
-
-            // Output
-            ConsoleOutput.WriteLine($" Connection State: {connector.ConnectionState}");
-            // out-end
-        }
-
-        private void CloseAndDisposeDatabaseObj(IDbConnector connector)
-        {
-            connector.Dispose();
-
-            // Output
-            ConsoleOutput.WriteLine($"Disposing object: {connector}");
-            // out-end
-        }
-
-        /*
-         * Description: Identify the required fields to create the database connection and database connector properties.
-         * 
-         * @param:      [String]    providerName        identify which providername will be use for the database connection
-         *                                              stored in the configuration setting.
-         * 
-         * mutations: [Type]    this.dbConnType         stores the current connection type in this object
-         *            [String]  this.connectionString   stores the current connection string in this object
-         *            
-         * @return:   [Boolean]                         if the this.dbConntype is not null and this.connectionString is not
-         *                                              null, empty string or white space.
-         */
-        private bool IdentifyRequiredFields(string providerName)
-        {
-            switch (providerName)
-            {
-                case Provider.MySql:
-                    this.dbConnType = DatabaseType.MySqlConn;
-                    this.connectionString = ConfigurationManager.ConnectionStrings[dbConnStrngKeyNm].ConnectionString;
-                    break;
-            }
-
-            return (this.dbConnType != null && !string.IsNullOrWhiteSpace(this.connectionString));
-        }
-
-        /* Description: It builds ainstance of the [IDatabaseConnector] base on the connection type (MySql, SQl Server, Postgress SQL, etc...)
-         * 
-         * access:      It uses the private fields [this.dbConnType, this.connectionString]
-         * 
-         * @return      Returns a newly created instace of [IDatabaseConnector].
-         */
-
-        private IDbConnector BuildConnector()
-        {
-            return DbInstance.CreateDatabaseConnector(this.dbConnType, this.connectionString);
+            Tester.CloseAndDisposeDatabaseObject(in this.appState);
         }
     }
 }
