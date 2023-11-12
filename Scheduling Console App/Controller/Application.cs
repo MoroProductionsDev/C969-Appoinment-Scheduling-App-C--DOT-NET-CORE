@@ -7,12 +7,19 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 using Scheduling_Library;
+using System.ComponentModel;
+using Scheduling_Library.Model.structure;
+using Scheduling_Library.Model.factory;
+using Scheduling_Library.Model.data;
+using Scheduling_Library.Model.database;
 
 namespace Scheduling_Console_App
 {
-    internal class Application
+    internal sealed class Application
     {
+
         private Type dbConnType;
         private string connectionString;
 
@@ -28,26 +35,54 @@ namespace Scheduling_Console_App
         */
         public void Run(string providerName)
         {
-            ConsoleOutput output = new ConsoleOutput();
-
             if (!IdentifyRequiredFields(providerName))
             {
                 return;
             }
 
-            IDatabaseConnector connector = BuildConnector();
+            DbSchema clientSchema = new DbStructure.ClientDatabaseSchema();
 
+            IDbConnector connector = BuildConnector();
+
+ 
+            OpeningDatabaseConnectionTest(connector);
+
+            /*ReadingDatabaseTest(connector, commandText);*/
+
+            MappingDatabaseTest(in connector, clientSchema);
+
+            CloseAndDisposeDatabaseObj(connector);
+        }
+
+        private void MappingDatabaseTest(in IDbConnector connector, in DbSchema dbSchema)
+        {
+            DbDataSet databaseDataTable = new DbDataSet(in connector, in dbSchema);
+
+            databaseDataTable.Populate();
+        }
+
+        private void writingDatabaseTest(IDbConnector connector, String commandText)
+        {
+            connector?.CreateDbCommand(commandText);
+        }
+
+
+        private void OpeningDatabaseConnectionTest(IDbConnector connector)
+        {
             connector?.OpenConnection();
 
-            var commandText = "SELECT * FROM client_schedule.customer;";
+            // Output
+            ConsoleOutput.WriteLine($" Connection State: {connector.ConnectionState}");
+            // out-end
+        }
 
-            connector?.CreateCommand(commandText).Execute();
+        private void CloseAndDisposeDatabaseObj(IDbConnector connector)
+        {
+            connector.Dispose();
 
-            DatabaseDataTable databaseDataTable = BuildDatabaseDataTable(connector?.DbDataReader);
-
-            databaseDataTable?.Create();
-
-            output.ShowTable(databaseDataTable.DbDataTable);
+            // Output
+            ConsoleOutput.WriteLine($"Disposing object: {connector}");
+            // out-end
         }
 
         /*
@@ -82,23 +117,9 @@ namespace Scheduling_Console_App
          * @return      Returns a newly created instace of [IDatabaseConnector].
          */
 
-        private IDatabaseConnector BuildConnector()
+        private IDbConnector BuildConnector()
         {
-            return DatabaseInstance.CreateDatabaseConnector(this.dbConnType, this.connectionString);
-        }
-
-
-        /* Description: It builds a instance of the [DatabaseDataTable] base on reference data reader provided.
-         * 
-         * @param       [IDataReader] reader        It carries a reference to database data reader returned from it.
-         * 
-         * access:      It creates a new DataTable instance and pases it internally.
-         * 
-         * @return      Returns a newly created instace of [DatabaseDataTable].
-         */
-        private DatabaseDataTable BuildDatabaseDataTable(IDataReader reader)
-        {
-            return DataInstance.CreateDbDataTable(reader, DataInstance.createDataTable());
+            return DbInstance.CreateDatabaseConnector(this.dbConnType, this.connectionString);
         }
     }
 }
