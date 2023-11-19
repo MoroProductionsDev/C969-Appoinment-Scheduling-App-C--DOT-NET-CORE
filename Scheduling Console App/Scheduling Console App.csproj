@@ -51,10 +51,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\Factory\AppFactory.cs" />
+    <Compile Include="Controller\State\AppData.cs" />
+    <Compile Include="Controller\State\AppState.cs" />
+    <Compile Include="Controller\Test\Tester.cs" />
+    <Compile Include="Controller\Validate\Validator.cs" />
     <Compile Include="View\ConsoleOutput.cs" />
     <Compile Include="Controller\Application.cs" />
-    <Compile Include="Controller\Controller.cs" />
-    <Compile Include="View\Program.cs" />
+    <Compile Include="Controller\AppController.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

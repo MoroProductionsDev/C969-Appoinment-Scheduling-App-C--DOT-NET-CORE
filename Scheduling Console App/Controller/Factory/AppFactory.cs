@@ -11,6 +11,7 @@ using Scheduling_Library.Model.Data;
 using Scheduling_Library.Model.Database;
 using Scheduling_Console_App.Controller.Config;
 using Scheduling_Console_App.Controller.State;
+using System.Xml.Linq;
 
 namespace Scheduling_Console_App.Controller.Factory
 {
@@ -34,12 +35,44 @@ namespace Scheduling_Console_App.Controller.Factory
 
             switch (providerName)
             {
-                case Provider.MySql:
+                case DbProvider.MySqlClient:
                     dbConfig = new MySqlConfiguration();
                     break;
             }
 
             return dbConfig;
+        }
+
+        internal static DbSchema BuildDbSchema(in String dbName)
+        {
+            DbSchema dbSchema = null;
+
+            switch (dbName)
+            {
+                case DbName.ClientScheduleDbName:
+                    dbSchema = new ClientScheduleDbSchema();
+                    break;
+            }
+
+            return dbSchema;
+        }
+
+        internal static AppState BuildAppState(in IDbConfiguration dbConfig, in String dbName)
+        {
+            return new AppState(in dbConfig, in dbName);
+        }
+
+        internal static AppData BuildAppData(in String dbName) {
+            AppData appData = null;
+
+            switch (dbName)
+            {
+                case DbName.ClientScheduleDbName:
+                    appData = new AppData();
+                    break;
+            }
+            
+            return appData;
         }
 
         internal static IDbConnector BuildDatabaseConnector(in IDbConfiguration dbConfig)

@@ -29,12 +29,10 @@ namespace Scheduling_Console_App
         // The "connectionString" element's name int the "App.config" file that will be use to connect
         // to the correct database data.
 
-        public Application(in String providerName)
+        public Application(in String providerName, in String dbName)
         {
-            this.dbConfig = AppFactory.BuildDatabaseConfiguration(providerName);
-            this.appState = new AppState();
-            this.appState.DbConnector = AppFactory.BuildDatabaseConnector(dbConfig);
-            this.appState.DbDataSet = AppFactory.BuildDatabaseDataSet(this.appState);
+            this.dbConfig = AppFactory.BuildDatabaseConfiguration(in providerName);
+            this.appState = AppFactory.BuildAppState(in this.dbConfig, dbName);
         }
 
         /*
@@ -51,7 +49,9 @@ namespace Scheduling_Console_App
 
             //ConsoleOutput.ShowTable(this.appState.DbDataSet.DataSet.Tables);
 
-            Tester.UpdateDatabaseTest(in this.appState);
+            Tester.AuthenticationTest(in this.appState);
+
+            //Tester.UpdateDatabaseTest(in this.appState);
 
             Tester.CloseAndDisposeDatabaseObject(in this.appState);
         }

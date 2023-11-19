@@ -29,7 +29,7 @@ namespace Scheduling_Console_App
     {
         static void Main(string[] args)
         {
-            Application application = new Application(Provider.MySql);
+            Application application = new Application(DbProvider.MySqlClient, DbName.ClientScheduleDbName);
 
             application.Run();
         }

@@ -117,16 +117,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\database\DbConnectionEventArgs.cs" />
-    <Compile Include="Model\data\DatabaseDataTable.cs" />
-    <Compile Include="Model\factory\DatabaseInstance.cs" />
-    <Compile Include="Model\factory\DataInstance.cs" />
-    <Compile Include="Model\database\IDatabaseConnector.cs" />
-    <Compile Include="Model\database\MySqlConnector.cs" />
-    <Compile Include="Model\structure\DbStructure.cs" />
-    <Compile Include="Model\structure\DatabaseSchema.cs" />
+    <Compile Include="Model\Config\IDbConfiguration.cs" />
+    <Compile Include="Model\Config\MySqlConfiguration.cs" />
+    <Compile Include="Model\Database\DbConnectionEventArgs.cs" />
+    <Compile Include="Model\Data\DbDataSet.cs" />
+    <Compile Include="Model\Data\ClientScheduleRecord.cs" />
+    <Compile Include="Model\Data\IDbRecord.cs" />
+    <Compile Include="Model\Factory\DbInstance.cs" />
+    <Compile Include="Model\Factory\DataInstance.cs" />
+    <Compile Include="Model\Database\IDbConnector.cs" />
+    <Compile Include="Model\Database\MySqlConnector.cs" />
+    <Compile Include="Model\Structure\ClientScheduleDbSchema.cs" />
+    <Compile Include="Model\Structure\DbSchema.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Model\structure\Structures.cs" />
+    <Compile Include="Model\Structure\DbProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

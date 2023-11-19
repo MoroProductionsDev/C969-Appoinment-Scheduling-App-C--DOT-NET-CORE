@@ -1,2 +1,0 @@
-C:\Users\moro-dev\Documents\dev\C969\Scheduling App\Scheduling Console App\obj\Debug\Scheduling Library.csproj.AssemblyReference.cache
-C:\Users\moro-dev\Documents\dev\C969\Scheduling App\Scheduling Console App\obj\Debug\Scheduling Library.csproj.CoreCompileInputs.cache
