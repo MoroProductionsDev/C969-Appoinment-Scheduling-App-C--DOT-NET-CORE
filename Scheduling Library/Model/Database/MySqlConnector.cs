@@ -23,9 +23,10 @@ namespace Scheduling_Library.Model.Database
      */
     internal sealed class MySqlConnector : IDbConnector
     {
-        private readonly IDbConnection dbConnection;
+        public readonly IDbConnection dbConnection;
 
         private IDbCommand _dbCommand;
+        private DbCommandBuilder _dbCommandBuilder;
         private IDbDataAdapter _dbDataAdapter;
         private bool disposedValue;
 
@@ -110,6 +111,17 @@ namespace Scheduling_Library.Model.Database
             }
             // Excpt
         }
+/*
+        public void CreateCommandBuilder()
+        {
+            *//*IDbDataAdapter dbDataAdapter = null;*//*
+
+            if (this.dbConnection.State.Equals(ConnectionState.Open))
+            {
+                this._dbCommandBuilder = new MySqlCommandBuilder();
+            }
+            // Excpt
+        }*/
 
         public IDbDataAdapter DbDtAdapter
         {
@@ -128,6 +140,24 @@ namespace Scheduling_Library.Model.Database
                 _dbDataAdapter = value;
             }
         }
+/*
+        public DbCommandBuilder DbCommandBuilder
+        {
+            get
+            {
+                if (null == _dbCommandBuilder)
+                {
+                    CreateCommandBuilder();
+                }
+
+                return _dbCommandBuilder;
+            }
+
+            private set
+            {
+                _dbCommandBuilder = value;
+            }
+        }*/
 
 
         /*

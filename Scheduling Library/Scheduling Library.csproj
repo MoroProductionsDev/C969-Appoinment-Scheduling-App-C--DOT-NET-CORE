@@ -122,7 +122,6 @@
     <Compile Include="Model\Database\DbConnectionEventArgs.cs" />
     <Compile Include="Model\Data\DbDataSet.cs" />
     <Compile Include="Model\Data\ClientScheduleRecord.cs" />
-    <Compile Include="Model\Data\IDbRecord.cs" />
     <Compile Include="Model\Factory\DbInstance.cs" />
     <Compile Include="Model\Factory\DataInstance.cs" />
     <Compile Include="Model\Database\IDbConnector.cs" />

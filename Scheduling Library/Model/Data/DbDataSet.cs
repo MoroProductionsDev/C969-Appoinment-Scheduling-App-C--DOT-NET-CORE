@@ -15,6 +15,10 @@ using MySql.Data.MySqlClient;
 using Scheduling_Library.Model.Factory;
 using Scheduling_Library.Model.Structure;
 using Scheduling_Library.Model.Database;
+using static Scheduling_Library.Model.Structure.ClientScheduleDbSchema;
+using System.Net.NetworkInformation;
+using System.Data.SqlClient;
+using System.Data.Odbc;
 
 namespace Scheduling_Library.Model.Data
 {
@@ -82,27 +86,97 @@ namespace Scheduling_Library.Model.Data
 
             for (var tableIndex = 0; tableIndex < tableCount; ++tableIndex)
             {
+
                 string tableName = this.dbSchema.TableNamesIndented[tableIndex];
 
+                DataColumn pkColumn = this.DataSet.Tables[tableName].PrimaryKey[0];
+                ChangePKAttributes(pkColumn, tableName);
                 CreatePrimaryAndForeingKeyRelation(in tableName);
+
+/*
+                int columnCount = this.DataSet.Tables[tableName].Columns.Count;
+
+                for (var colIdx = columnCount - 4; colIdx < columnCount; ++colIdx)
+                {
+                    DataColumn column = this.DataSet.Tables[tableName].Columns[colIdx];
+
+                    if (column.DataType == typeof(DateTime))
+                    {
+                        
+                        SetDefaultVal<DateTime>(column);
+                    }
+                    else
+                    {
+                        SetDefaultVal<String>(column);
+                    }
+                }*/
+
+                //this.DataSet.Tables[tableName].AcceptChanges();
             }
 
+            //this.DataSet.AcceptChanges();
             mapped = true;
         }
 
-        public void Update(DbSchema[] tableSchemas)
+        public void Update<T>(String tableName, String ColumnName, T currentValue, T newValue)
         {
-
-
-            int tableCount = this.dbSchema.TableNamesIndented.Count;
             IDbDataAdapter dbDataAdapter = this.dbConnector.DbDtAdapter;
+            IQueryable<DataRow> query = (from row in this.DataSet.Tables[tableName].AsEnumerable()
+                        //where row.Field<T>(ColumnName) == value
+                        where EqualityComparer<T>.Default.Equals(row.Field<T>(ColumnName), currentValue)
+                        select row).AsQueryable();
 
-            dbDataAdapter.Update(this.DataSet);
-
-            foreach (var schema in tableSchemas)
+            if (query.Count() > 0)
             {
+                query.First()[ColumnName] = newValue;
+                //this.DataSet.Tables[tableName].AcceptChanges();
 
+                dbDataAdapter.SelectCommand.CommandText = $"SELECT * FROM `{this.dbSchema.DbName}`.`{tableName}`;";
+
+                var mySqlCommand = new MySqlCommand();
+                mySqlCommand.Connection = (MySqlConnection)((MySqlConnector)this.dbConnector).dbConnection;
+
+                mySqlCommand.CommandText = $"UPDATE `{this.dbSchema.DbName}`.`{tableName}` SET customerName = @custName " + "WHERE customerID = @custID;";
+                mySqlCommand.Parameters.Add("@custName", MySqlDbType.VarChar);
+                mySqlCommand.Parameters.Add("@custID", MySqlDbType.Int32);
+
+                mySqlCommand.Parameters["@custName"].Value = newValue;
+                mySqlCommand.Parameters["@custID"].Value = 3;
+
+                ((MySqlDataAdapter)dbDataAdapter).UpdateCommand = mySqlCommand;
+                Console.WriteLine(((MySqlDataAdapter) dbDataAdapter).Update(this.DataSet, tableName));
             }
+        }
+
+        public void Delete<T>(String tableName, String ColumnName, T currentValue)
+        {
+            IDbDataAdapter dbDataAdapter = this.dbConnector.DbDtAdapter;
+            IQueryable<DataRow> query = (from row in this.DataSet.Tables[tableName].AsEnumerable()
+                                             //where row.Field<T>(ColumnName) == value
+                                         where EqualityComparer<T>.Default.Equals(row.Field<T>(ColumnName), currentValue)
+                                         select row).AsQueryable();
+
+            if (query.Count() > 0)
+            {
+                query.First().Delete();
+                this.DataSet.Tables[tableName].AcceptChanges();
+
+                
+
+                //SqlCommandBuilder builder = new SqlCommandBuilder(dbDataAdapter);
+                //adapter.UpdateCommand = builder.GetUpdateCommand();
+                dbDataAdapter.Update(this.DataSet);
+                this.DataSet.AcceptChanges();
+            }
+        }
+
+        public void Insert(String tableName)
+        {
+            DataRow newRow = this.DataSet.Tables[tableName].NewRow();
+
+            newRow["customerName"] = "Peppe";
+
+            this.DataSet.Tables[tableName].Rows.Add(newRow);
         }
 
 
@@ -146,23 +220,45 @@ namespace Scheduling_Library.Model.Data
 
         private void CreatePrimaryAndForeingKeyRelation(in String tableName)
         {
-            int fkKeyCount = this.dbSchema.ForeignKeys[tableName].Length;
+            int fkKeyCount = this.dbSchema.ForeignKeysNames[tableName].Length;
 
             for (var fkIdx = 0; fkIdx < fkKeyCount; ++fkIdx)
             {
-                string pkTableName = this.dbSchema.FKTables[tableName][fkIdx];
-                string fkColumnName = this.dbSchema.ForeignKeys[tableName][fkIdx];
+                string pkTableName = this.dbSchema.FKTablesNames[tableName][fkIdx];
+                string fkColumnName = this.dbSchema.ForeignKeysNames[tableName][fkIdx];  
 
-                if (String.Empty == pkTableName)
+                if (String.Empty != pkTableName)
                 {
-                    continue;
+                    DataColumn primaryKey = this.DataSet.Tables[pkTableName].PrimaryKey[0];
+                    DataColumn foreignKey = this.DataSet.Tables[tableName].Columns[fkColumnName];
+
+                    foreignKey.ReadOnly = true;
+
+                    // Create a DataRelation to link the two tables.
+                    this.DataSet.Relations.Add(new DataRelation($"{tableName}_FK-{fkColumnName}", primaryKey, foreignKey));
                 }
+            }
+        }
 
-                // Create a DataRelation to link the two tables.
-                DataColumn primaryKey = this.DataSet.Tables[pkTableName].PrimaryKey[0];
-                DataColumn foreignKey = this.DataSet.Tables[tableName].Columns[fkColumnName];
+        private void ChangePKAttributes(DataColumn pkColumn, in String tableName)
+        {
+            int rowCount = this.DataSet.Tables[tableName].Rows.Count;
+            string keyColumnName = pkColumn.ColumnName;
+            int autoIncrementSeed = (int)this.DataSet.Tables[tableName].Rows[rowCount - 1][keyColumnName];
 
-                this.DataSet.Relations.Add(new DataRelation($"{tableName}_FK-{fkColumnName}", primaryKey, foreignKey));
+            pkColumn.AutoIncrementSeed = autoIncrementSeed + 1;
+            pkColumn.Unique = true;
+            pkColumn.ReadOnly = true;
+        }
+
+        private void SetDefaultVal<T>(DataColumn column)
+        {
+            if (typeof(T) == typeof(DateTime))
+            {
+                column.DefaultValue = DateTime.UtcNow.ToString();
+            } else
+            {
+                column.DefaultValue = this.DataSet.Tables["user"].Rows[0]["userName"];
             }
         }
 
@@ -171,7 +267,6 @@ namespace Scheduling_Library.Model.Data
             TaskCompletionSource<int> taskCompletionSource = new TaskCompletionSource<int>();
             try
             {
-
                 int result = dbDataAdapter.Fill(dataSet);
                 taskCompletionSource.SetResult(result);
             }
@@ -198,11 +293,5 @@ namespace Scheduling_Library.Model.Data
 
             return taskCompletionSource.Task;
         }
-
-        /*        
-        private void CreatePrimaryKey(in DataTable table, DbStructure.ClientDatabaseSchema.Table tableEnum)
-        {
-            table.PrimaryKey = new DataColumn[]{table.Columns[DbStructure.ClientDatabaseSchema.PrimaryKeys[tableEnum]]};
-        }*/
     }
 }

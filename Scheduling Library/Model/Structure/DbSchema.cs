@@ -11,9 +11,9 @@ namespace Scheduling_Library.Model.Structure
     {
         public abstract String DbName { get; }
         public abstract Dictionary<int, string> TableNamesIndented { get; }
-        public abstract Dictionary<string, string[]> PrimaryKeys { get; }
-        public abstract Dictionary<string, string[]> ForeignKeys { get; }
-        public abstract Dictionary<string, string[]> FKTables { get; }
+        public abstract Dictionary<string, string[]> PrimaryKeysNames { get; }
+        public abstract Dictionary<string, string[]> ForeignKeysNames { get; }
+        public abstract Dictionary<string, string[]> FKTablesNames { get; }
         protected IEnumerable<T> GetEnumarated<T>()
         {
             return Enum.GetValues(typeof(T)).Cast<T>();

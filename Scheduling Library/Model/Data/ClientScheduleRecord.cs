@@ -14,7 +14,7 @@ namespace Scheduling_Library.Model.Data
     {
         public class UserRecord
         {
-            public Integers UserId;
+            public Int32 UserId;
             public String UserName;
             public String Password;
             public DateTime CreateDate;
@@ -25,9 +25,9 @@ namespace Scheduling_Library.Model.Data
 
         public class AppointmentRecord
         {
-            public Integers AppointmentId;
-            public Integers CustomerId;
-            public Integers UserID;
+            public Int32 AppointmentId;
+            public Int32 CustomerId;
+            public Int32 UserID;
             public String Title;
             public String Description;
             public String Location;
@@ -44,9 +44,9 @@ namespace Scheduling_Library.Model.Data
 
         public class CustomerRecord
         {
-            public Integers CustomerId;
+            public Int32 CustomerId;
             public String CustomerName;
-            public Integers AddressId;
+            public Int32 AddressId;
             public Boolean Active;
             public DateTime CreateDate;
             public String CreatedBy;
@@ -56,10 +56,10 @@ namespace Scheduling_Library.Model.Data
 
         public class AddressRecord
         {
-            public Integers AddressId;
+            public Int32 AddressId;
             public String Address;
             public String Address2;
-            public Integers CityId;
+            public Int32 CityId;
             public String PostalCode;
             public String Phone;
             public DateTime CreateDate;
@@ -70,9 +70,9 @@ namespace Scheduling_Library.Model.Data
 
         public class CityRecord
         {
-            public Integers CityId;
+            public Int32 CityId;
             public String City;
-            public Integers CountryId;
+            public Int32 CountryId;
             public DateTime CreateDate;
             public String CreatedBy;
             public DateTime LastUpdate;
@@ -81,7 +81,7 @@ namespace Scheduling_Library.Model.Data
 
         public class CountryRecord
         {
-            public Integers CountryId;
+            public Int32 CountryId;
             public String Country;
             public DateTime CreateDate;
             public String CreatedBy;
