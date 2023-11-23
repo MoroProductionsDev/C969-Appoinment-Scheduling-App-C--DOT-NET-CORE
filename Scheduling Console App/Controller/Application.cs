@@ -47,9 +47,25 @@ namespace Scheduling_Console_App
 
             Tester.MappingDatabaseTest(in this.appState);
 
+            ConsoleOutput.ShowTable(appState.DbDataSet.DataSet.Tables["customer"]);
+
+            //Tester.InsertDatabaseTest(in this.appState);
+
+            Tester.UpdateDatabaseTest(in this.appState);
+
+            ConsoleOutput.ShowTable(appState.DbDataSet.DataSet.Tables["customer"]);
+
+/*            Tester.DeleteDatabaseTest(in this.appState);
+
+            ConsoleOutput.ShowTable(appState.DbDataSet.DataSet.Tables["customer"]);
+
+            Tester.InsertDatabaseTest(in this.appState);
+
+            ConsoleOutput.ShowTable(appState.DbDataSet.DataSet.Tables["customer"]);*/
+
             //ConsoleOutput.ShowTable(this.appState.DbDataSet.DataSet.Tables);
 
-            Tester.AuthenticationTest(in this.appState);
+            // Tester.AuthenticationTest(in this.appState);
 
             //Tester.UpdateDatabaseTest(in this.appState);
 

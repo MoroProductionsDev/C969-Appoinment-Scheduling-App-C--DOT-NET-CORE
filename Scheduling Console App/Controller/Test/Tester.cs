@@ -34,21 +34,36 @@ namespace Scheduling_Console_App.Controller.Test
             AppController.MapDataBaseToDataSet(appState);
         }
 
-        internal static void UpdateDatabaseTest(in AppState appState) 
+        internal static void InsertDatabaseTest(in AppState appState)
         {
-            string columnName = "customerName";
-            DataTable table = appState.DbDataSet.DataSet.Tables[ClientScheduleTableName.Customer];
-            DataRow resultRow = table.Select($"{columnName} = 'Raul Rivero'").FirstOrDefault();
-            resultRow[columnName] = "Pedro Navaja";
-
-            ConsoleOutput.ShowTable(table, resultRow);
+            AppController.AddCustomerRecord(in appState);
         }
 
-        /*        internal static void writingDatabaseTest(in State appState)
-                {
-                    appState.Connector?.CreateDbCommand(commandText);
-                }*/
+        internal static void UpdateDatabaseTest(in AppState appState) 
+        {
+            /*            string columnName = "customerName";
+                        DataTable table = appState.DbDataSet.DataSet.Tables[ClientScheduleTableName.Customer];
+                        DataRow resultRow = table.Select($"{columnName} = 'Raul Rivero'").FirstOrDefault();
+                        resultRow[columnName] = "Pedro Navaja";
 
+                        ConsoleOutput.ShowTable(table, resultRow);*/
+
+            AppController.UpdateCustomerRecord(in appState);
+        }
+
+        internal static void DeleteDatabaseTest(in AppState appState)
+        {
+            AppController.DeleteCustomerRecord(in appState);
+        }
+
+
+/*        internal static void OutputAllDatasetTablesTest(in AppState appState)
+        {
+            foreach (DataTable dtTable in appState.DbDataSet.DataSet.Tables)
+            {
+                ConsoleOutput.ShowTable(dtTable);
+            } 
+        }*/
 
         internal static void OpeningDatabaseConnectionTest(in AppState appState)
         {

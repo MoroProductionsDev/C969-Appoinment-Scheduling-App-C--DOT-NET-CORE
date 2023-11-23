@@ -54,6 +54,7 @@
     <Compile Include="Controller\Factory\AppFactory.cs" />
     <Compile Include="Controller\State\AppData.cs" />
     <Compile Include="Controller\State\AppState.cs" />
+    <Compile Include="Controller\Test\BenchMarkTester.cs" />
     <Compile Include="Controller\Test\Tester.cs" />
     <Compile Include="Controller\Validate\Validator.cs" />
     <Compile Include="View\ConsoleOutput.cs" />

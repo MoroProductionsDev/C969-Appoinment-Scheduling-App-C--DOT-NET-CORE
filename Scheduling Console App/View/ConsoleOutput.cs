@@ -80,16 +80,33 @@ namespace Scheduling_Console_App
             Console.WriteLine();
         }
 
+        internal static void ShowDataColumnInfo(in DataTableCollection dataTables)
+        {
+            foreach (DataTable dtTable in dataTables)
+            {
+                ShowDataColumnInfo(dtTable.Columns);
+            }
+            Console.WriteLine();
+        }
+
         internal static void ShowDataColumnInfo(in DataColumnCollection dataColumns)
         {
             foreach (DataColumn dtColumn in dataColumns)
             {
-                Console.WriteLine($"   Column Name: {dtColumn.ColumnName}");
-                Console.WriteLine($" Default Value: {dtColumn.DefaultValue}");
-                Console.WriteLine($"     Data Type: {dtColumn.DataType}");
-                Console.WriteLine($"        Unique: {dtColumn.Unique}");
-                Console.WriteLine($" Allow Db Null: {dtColumn.AllowDBNull}");
-                Console.WriteLine($"Column Mapping: {dtColumn.ColumnMapping}");
+                Console.WriteLine($"        Column Name: {dtColumn.ColumnName}");
+                Console.WriteLine($"            Caption: {dtColumn.Caption}");
+                Console.WriteLine($"          Data Type: {dtColumn.DataType}");
+                Console.WriteLine($"            Ordinal: {dtColumn.Ordinal}");
+                Console.WriteLine($"             Unique: {dtColumn.Unique}");
+                Console.WriteLine($"      Allow Db Null: {dtColumn.AllowDBNull}");
+                Console.WriteLine($"      Default Value: {dtColumn.DefaultValue}");
+                Console.WriteLine($"           ReadOnly: {dtColumn.ReadOnly}");
+                Console.WriteLine($"     Column Mapping: {dtColumn.ColumnMapping}");
+                Console.WriteLine($"     Auto Increment: {dtColumn.AutoIncrement}");
+                Console.WriteLine($"Auto Increment Seed: {dtColumn.AutoIncrementSeed}");
+                Console.WriteLine($"Auto Increment Step: {dtColumn.AutoIncrementStep}");
+                Console.WriteLine($"         Max Length: {dtColumn.MaxLength}");
+                Console.WriteLine();
             }
             Console.WriteLine();
         }
