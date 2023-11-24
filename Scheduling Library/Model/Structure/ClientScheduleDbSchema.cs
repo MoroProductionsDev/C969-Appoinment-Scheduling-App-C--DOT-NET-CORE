@@ -50,7 +50,7 @@ namespace Scheduling_Library.Model.Structure
             {ClientScheduleTableName.Country, new[] {String.Empty } }
         };
 
-        public override String DbName { get => _dbName; }
+        public override string DbName { get => _dbName; }
         public override Dictionary<int, string> TableNamesIndented { get => _tableNamesIndented; }
         public override Dictionary<string, string[]> PrimaryKeysNames { get => _primaryKeys; }
         public override Dictionary<string, string[]> ForeignKeysNames { get => _foreignKeys; }

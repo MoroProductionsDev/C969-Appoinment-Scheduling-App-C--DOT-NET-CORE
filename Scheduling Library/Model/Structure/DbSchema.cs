@@ -9,7 +9,7 @@ namespace Scheduling_Library.Model.Structure
 {
     public abstract class DbSchema 
     {
-        public abstract String DbName { get; }
+        public abstract string DbName { get; }
         public abstract Dictionary<int, string> TableNamesIndented { get; }
         public abstract Dictionary<string, string[]> PrimaryKeysNames { get; }
         public abstract Dictionary<string, string[]> ForeignKeysNames { get; }

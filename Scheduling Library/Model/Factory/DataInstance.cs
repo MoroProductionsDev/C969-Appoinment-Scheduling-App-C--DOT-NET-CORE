@@ -35,9 +35,9 @@ namespace Scheduling_Library.Model.Factory
          *                                      
          * @return      A instance of a [DbDataSet].
          */
-        public static DbDataSet CreateDbDataTable(in IDbConnector dbConnector, in DbSchema dbSchema)
+        public static DbDataSet CreateDbDataTable(DbConnector dbConnector, DbSchema dbSchema)
         {
-            return new DbDataSet(in dbConnector, in dbSchema);
+            return new DbDataSet(dbConnector, dbSchema);
         }
 
         /*

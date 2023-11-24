@@ -14,7 +14,7 @@ namespace Scheduling_Console_App.Controller.Test
     internal static class Tester
     {
 
-        internal static void AuthenticationTest(in AppState appState)
+        internal static void AuthenticationTest(AppState appState)
         {
             string[] userNames = new string[] { "test", "raul", "test" };
             string[] passwords = new string[] {"pasword", "test", "test" };
@@ -29,17 +29,17 @@ namespace Scheduling_Console_App.Controller.Test
             }
         }
 
-        internal static void MappingDatabaseTest(in AppState appState)
+        internal static void MappingDatabaseTest(AppState appState)
         {
             AppController.MapDataBaseToDataSet(appState);
         }
 
-        internal static void InsertDatabaseTest(in AppState appState)
+        internal static void InsertDatabaseTest(AppState appState)
         {
-            AppController.AddCustomerRecord(in appState);
+            AppController.AddCustomerRecord(appState);
         }
 
-        internal static void UpdateDatabaseTest(in AppState appState) 
+        internal static void UpdateDatabaseTest(AppState appState) 
         {
             /*            string columnName = "customerName";
                         DataTable table = appState.DbDataSet.DataSet.Tables[ClientScheduleTableName.Customer];
@@ -48,12 +48,12 @@ namespace Scheduling_Console_App.Controller.Test
 
                         ConsoleOutput.ShowTable(table, resultRow);*/
 
-            AppController.UpdateCustomerRecord(in appState);
+            AppController.UpdateCustomerRecord(appState);
         }
 
-        internal static void DeleteDatabaseTest(in AppState appState)
+        internal static void DeleteDatabaseTest(AppState appState)
         {
-            AppController.DeleteCustomerRecord(in appState);
+            AppController.DeleteCustomerRecord(appState);
         }
 
 
@@ -65,7 +65,7 @@ namespace Scheduling_Console_App.Controller.Test
             } 
         }*/
 
-        internal static void OpeningDatabaseConnectionTest(in AppState appState)
+        internal static void OpeningDatabaseConnectionTest(AppState appState)
         {
             appState.DbConnector?.OpenConnection();
 
@@ -74,7 +74,7 @@ namespace Scheduling_Console_App.Controller.Test
             // out-end
         }
 
-        internal static void CloseAndDisposeDatabaseObject(in AppState appState)
+        internal static void CloseAndDisposeDatabaseObject(AppState appState)
         {
             appState.DbConnector?.Dispose();
 

@@ -13,11 +13,11 @@ namespace Scheduling_Console_App.Controller.Validate
 {
     internal static class Validator
     {
-        public static bool CheckCredentials(in AppState appState)
+        public static bool CheckCredentials(AppState appState)
         {
             DataTable userTable = appState.DbDataSet.DataSet.Tables[ClientScheduleTableName.User];
-            String userName = appState.AppData.UserRecord.UserName;
-            String password = appState.AppData.UserRecord.Password;
+            string userName = appState.AppData.UserRecord.UserName;
+            string password = appState.AppData.UserRecord.Password;
 
             IEnumerable<DataRow> userQuery =
             from userRow in userTable.AsEnumerable()
@@ -32,7 +32,7 @@ namespace Scheduling_Console_App.Controller.Validate
 
             return userNameAndPw.ToList().Count == 1;
         }
-
+/*
         internal static void DidValueChange(in AppState appState, in String tableName)
         {
             DataRow[] dtRows = null;
@@ -73,18 +73,18 @@ namespace Scheduling_Console_App.Controller.Validate
 
             var query = (
                 from customer in customerTable.AsEnumerable()
-/*                from address in addressTable.AsEnumerable()
+*//*                from address in addressTable.AsEnumerable()
                 from city in cityTable.AsEnumerable()
-                from country in countryTable.AsEnumerable()*/
+                from country in countryTable.AsEnumerable()*//*
                 where customer.Field<Int32>(CustomerColumnName.CustomerId) == 2
                 select new
                 {
                     CustomerId = customer.Field<Int32>(CustomerColumnName.CustomerId),
                     CustomerName = customer.Field<String>(CustomerColumnName.CustomerName),
-/*                    PhoneNumber = address.Field<String>(AddressColumnName.Phone),
+*//*                    PhoneNumber = address.Field<String>(AddressColumnName.Phone),
                     Address = address.Field<String>(AddressColumnName.Address),
                     CityName = city.Field<String>(CityColumnName.City),
-                    CountryName = country.Field<String>(CountryColumnName.Country),*/
+                    CountryName = country.Field<String>(CountryColumnName.Country),*//*
                 });
 
             Console.WriteLine(query.Count());
@@ -93,19 +93,19 @@ namespace Scheduling_Console_App.Controller.Validate
             {
                 Console.WriteLine("CustomerId: {0} "
                                 + "CustomerName: {1} ",
-/*                                + "PhoneNumber: {2} "
+*//*                                + "PhoneNumber: {2} "
                                 + "Address: {3} "
                                 + "Address: {4} "
                                 + "CityName: {5} "
-                                + "CountryName: {6} ",*/
+                                + "CountryName: {6} ",*//*
                     row.CustomerId,
                     row.CustomerName);
-/*                    row.PhoneNumber,
+*//*                    row.PhoneNumber,
                     row.Address,
                     row.CityName,
-                    row.CountryName);*/
+                    row.CountryName);*//*
             }
             Console.WriteLine("_");
-        }
+        }*/
     }
 }

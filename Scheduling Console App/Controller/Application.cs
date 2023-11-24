@@ -10,11 +10,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using Scheduling_Library;
 using System.ComponentModel;
-using Scheduling_Library.Model.Structure;
-using Scheduling_Library.Model.Factory;
-using Scheduling_Library.Model.Data;
-using Scheduling_Library.Model.Database;
-using Scheduling_Console_App.Controller.Config;
+using Scheduling_Library.Model.Config;
 using Scheduling_Console_App.Controller.State;
 using Scheduling_Console_App.Controller.Factory;
 using Scheduling_Console_App.Controller.Test;
@@ -24,15 +20,15 @@ namespace Scheduling_Console_App
     internal sealed class Application
     {
         private readonly AppState appState;
-        private readonly IDbConfiguration dbConfig;
+        private readonly IDbConfig dbConfig;
 
         // The "connectionString" element's name int the "App.config" file that will be use to connect
         // to the correct database data.
 
-        public Application(in String providerName, in String dbName)
+        public Application(string providerName, string dbName)
         {
-            this.dbConfig = AppFactory.BuildDatabaseConfiguration(in providerName);
-            this.appState = AppFactory.BuildAppState(in this.dbConfig, dbName);
+            this.dbConfig = AppFactory.BuildDatabaseConfiguration(providerName);
+            this.appState = AppFactory.BuildAppState(this.dbConfig, dbName);
         }
 
         /*
@@ -43,33 +39,33 @@ namespace Scheduling_Console_App
         */
         public void Run()
         {            
-            Tester.OpeningDatabaseConnectionTest(in this.appState);
+            Tester.OpeningDatabaseConnectionTest(this.appState);
 
-            Tester.MappingDatabaseTest(in this.appState);
-
-            ConsoleOutput.ShowTable(appState.DbDataSet.DataSet.Tables["customer"]);
-
-            //Tester.InsertDatabaseTest(in this.appState);
-
-            Tester.UpdateDatabaseTest(in this.appState);
+            Tester.MappingDatabaseTest(this.appState);
 
             ConsoleOutput.ShowTable(appState.DbDataSet.DataSet.Tables["customer"]);
 
-/*            Tester.DeleteDatabaseTest(in this.appState);
+            //Tester.InsertDatabaseTest(this.appState);
+
+            Tester.UpdateDatabaseTest(this.appState);
 
             ConsoleOutput.ShowTable(appState.DbDataSet.DataSet.Tables["customer"]);
 
-            Tester.InsertDatabaseTest(in this.appState);
+/*            Tester.DeleteDatabaseTest(this.appState);
+
+            ConsoleOutput.ShowTable(appState.DbDataSet.DataSet.Tables["customer"]);
+
+            Tester.InsertDatabaseTest(this.appState);
 
             ConsoleOutput.ShowTable(appState.DbDataSet.DataSet.Tables["customer"]);*/
 
             //ConsoleOutput.ShowTable(this.appState.DbDataSet.DataSet.Tables);
 
-            // Tester.AuthenticationTest(in this.appState);
+            // Tester.AuthenticationTest(this.appState);
 
-            //Tester.UpdateDatabaseTest(in this.appState);
+            //Tester.UpdateDatabaseTest(this.appState);
 
-            Tester.CloseAndDisposeDatabaseObject(in this.appState);
+            Tester.CloseAndDisposeDatabaseObject(this.appState);
         }
     }
 }

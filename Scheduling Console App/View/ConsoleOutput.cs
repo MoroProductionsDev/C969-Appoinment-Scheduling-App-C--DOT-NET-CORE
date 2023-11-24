@@ -80,7 +80,7 @@ namespace Scheduling_Console_App
             Console.WriteLine();
         }
 
-        internal static void ShowDataColumnInfo(in DataTableCollection dataTables)
+        internal static void ShowDataColumnInfo(DataTableCollection dataTables)
         {
             foreach (DataTable dtTable in dataTables)
             {
@@ -89,7 +89,7 @@ namespace Scheduling_Console_App
             Console.WriteLine();
         }
 
-        internal static void ShowDataColumnInfo(in DataColumnCollection dataColumns)
+        internal static void ShowDataColumnInfo(DataColumnCollection dataColumns)
         {
             foreach (DataColumn dtColumn in dataColumns)
             {

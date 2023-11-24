@@ -5,12 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Scheduling_Console_App.Controller.Config
+namespace Scheduling_Library.Model.Config
 {
     //
-    public interface IDbConfiguration
+    public interface IDbConfig
     {
         String ConnectionString { get; }
-        Type ConnectionType { get; }
     }
 }

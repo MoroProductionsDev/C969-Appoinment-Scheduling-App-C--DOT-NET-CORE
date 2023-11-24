@@ -9,7 +9,7 @@ using Scheduling_Library.Model.Structure;
 using Scheduling_Library.Model.Factory;
 using Scheduling_Library.Model.Data;
 using Scheduling_Library.Model.Database;
-using Scheduling_Console_App.Controller.Config;
+using Scheduling_Library.Model.Config;
 using Scheduling_Console_App.Controller.State;
 using System.Xml.Linq;
 
@@ -29,21 +29,21 @@ namespace Scheduling_Console_App.Controller.Factory
          * @return:   [Boolean]                         if the this.dbConntype is not null and this.connectionString is not
          *                                              null, empty string or white space.
          */
-        internal static IDbConfiguration BuildDatabaseConfiguration(in String providerName)
+        internal static IDbConfig BuildDatabaseConfiguration(string providerName)
         {
-            IDbConfiguration dbConfig = null;
+            IDbConfig dbConfig = null;
 
             switch (providerName)
             {
                 case DbProvider.MySqlClient:
-                    dbConfig = new MySqlConfiguration();
+                    dbConfig = new MySqlConfig();
                     break;
             }
 
             return dbConfig;
         }
 
-        internal static DbSchema BuildDbSchema(in String dbName)
+        internal static DbSchema BuildDbSchema(string dbName)
         {
             DbSchema dbSchema = null;
 
@@ -57,12 +57,12 @@ namespace Scheduling_Console_App.Controller.Factory
             return dbSchema;
         }
 
-        internal static AppState BuildAppState(in IDbConfiguration dbConfig, in String dbName)
+        internal static AppState BuildAppState(IDbConfig dbConfig, string dbName)
         {
-            return new AppState(in dbConfig, in dbName);
+            return new AppState(dbConfig, dbName);
         }
 
-        internal static AppData BuildAppData(in String dbName) {
+        internal static AppData BuildAppData(string dbName) {
             AppData appData = null;
 
             switch (dbName)
@@ -75,14 +75,14 @@ namespace Scheduling_Console_App.Controller.Factory
             return appData;
         }
 
-        internal static IDbConnector BuildDatabaseConnector(in IDbConfiguration dbConfig)
+        internal static DbConnector BuildDatabaseConnector(IDbConfig dbConfig)
         {
-            return DbInstance.CreateDatabaseConnector(dbConfig.ConnectionType, dbConfig.ConnectionString);
+            return DbInstance.CreateDatabaseConnector(dbConfig);
         }
 
         internal static DbDataSet BuildDatabaseDataSet(AppState appState)
         {
-            return new DbDataSet(appState.DbConnector, appState.DbSchema);
+            return DataInstance.CreateDbDataTable(appState.DbConnector, appState.DbSchema);
         }
     }
 }

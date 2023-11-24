@@ -1,32 +1,30 @@
-﻿using Scheduling_Console_App.Controller.State;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Scheduling_Library.Model.Structure;
+using Scheduling_Console_App.Controller.State;
 using Scheduling_Console_App.Controller.Validate;
 using static Scheduling_Library.Model.Structure.ClientScheduleDbSchema;
-using Scheduling_Library.Model.Structure;
-using System.Net.PeerToPeer;
-using System.Collections;
 
 namespace Scheduling_Console_App.Controller
 {
     internal static class AppController
     {
-        internal static void AuthenticateLogIn(in AppState appState)
+        internal static void AuthenticateLogIn(AppState appState)
         {
-            Validator.CheckCredentials(in appState);
+            Validator.CheckCredentials(appState);
         }
 
-        internal static void MapDataBaseToDataSet(in AppState appState)
+        internal static void MapDataBaseToDataSet(AppState appState)
         {
             appState.DbDataSet.Mapping();
         }
 
-        internal static void AddCustomerRecord(in AppState appState)
+        internal static void AddCustomerRecord(AppState appState)
         {
             appState.DbDataSet.Insert(ClientScheduleTableName.Customer);
 
@@ -96,13 +94,13 @@ namespace Scheduling_Console_App.Controller
                     });*/
         }
 
-        internal static void UpdateCustomerRecord(in AppState appState)
+        internal static void UpdateCustomerRecord(AppState appState)
         {
-            appState.DbDataSet.Update<string>(ClientScheduleTableName.Customer, CustomerColumnName.CustomerName, "Ina Prufung", "Moro Men");
+            appState.DbDataSet.Update<string>(ClientScheduleDbSchema._dbName,  ClientScheduleTableName.Customer, CustomerColumnName.CustomerName, "Ina Prufung", "Moro Men");
 
             //appState.AppData.CustomerRecord.CustomerName = "Pepe";
 /*            var dtRows = appState.DbDataSet.DataSet.Tables[ClientScheduleTableName.Customer].Rows.Find(9);
-
+s
             Console.WriteLine(dtRows.ItemArray.Length);
             Console.WriteLine(dtRows.ItemArray[0]);
             Console.WriteLine(dtRows.ItemArray[1]);
@@ -116,7 +114,7 @@ namespace Scheduling_Console_App.Controller
             //Validator.DidValueChange(appState, ClientScheduleTableName.Customer);
         }
 
-        internal static void DeleteCustomerRecord(in AppState appState) {
+        internal static void DeleteCustomerRecord(AppState appState) {
             appState.DbDataSet.Delete<string>(ClientScheduleTableName.Customer, CustomerColumnName.CustomerName, "Moro Men");
         }
     }

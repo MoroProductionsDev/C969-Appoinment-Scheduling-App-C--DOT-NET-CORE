@@ -7,15 +7,13 @@ using System.Threading.Tasks;
 using Scheduling_Library.Model.Structure;
 using MySql.Data.MySqlClient;
 
-namespace Scheduling_Console_App.Controller.Config
+namespace Scheduling_Library.Model.Config
 {
-    public sealed class MySqlConfiguration : IDbConfiguration
+    public sealed class MySqlConfig : IDbConfig
     {
         private const string connectionStringName = "MySqlDBConn";
         private readonly String connectionString = ConfigurationManager.ConnectionStrings[connectionStringName].ConnectionString;
-        private readonly Type connectionType = typeof(MySqlConnection);
 
         public string ConnectionString => connectionString;
-        public Type ConnectionType => connectionType;
     }
 }

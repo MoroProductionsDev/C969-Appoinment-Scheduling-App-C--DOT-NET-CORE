@@ -11,14 +11,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using MySql.Data.MySqlClient;
 using Scheduling_Library.Model.Factory;
 using Scheduling_Library.Model.Structure;
 using Scheduling_Library.Model.Database;
-using static Scheduling_Library.Model.Structure.ClientScheduleDbSchema;
-using System.Net.NetworkInformation;
-using System.Data.SqlClient;
-using System.Data.Odbc;
 
 namespace Scheduling_Library.Model.Data
 {
@@ -34,7 +29,7 @@ namespace Scheduling_Library.Model.Data
      */
     public sealed class DbDataSet
     {
-        private readonly IDbConnector dbConnector;
+        private readonly DbConnector dbConnector;
         private readonly DbSchema dbSchema;
         private bool mapped;
         public DataSet DataSet { get; private set; }
@@ -49,17 +44,17 @@ namespace Scheduling_Library.Model.Data
          *              It initialize this.dbSchema private field/object based on the [IDataReader] reference passed.
          *              It initialize this.dataSet private field/object based on the [DbSchema] reference passed.
          */
-        public DbDataSet(in IDbConnector dbConnector, in DbSchema dbSchema)
+        public DbDataSet(DbConnector dbConnector, DbSchema dbSchema)
         {
             this.dbConnector = dbConnector;
             this.dbSchema = dbSchema;
             this.DataSet = DataInstance.createDataSet(dbSchema.DbName);
             this.mapped= false;
         }
+
         /*
          * 
         */
-
         public void Mapping()
         {
             if (this.mapped)
@@ -68,20 +63,16 @@ namespace Scheduling_Library.Model.Data
             }
 
             int tableCount = this.dbSchema.TableNamesIndented.Count;
-            IDbDataAdapter dbDataAdapter = this.dbConnector.DbDtAdapter;
-
-
-            dbDataAdapter.SelectCommand = this.dbConnector.CreateDbCommand(String.Empty);
 
             for (var tableIndex = 0; tableIndex < tableCount; ++tableIndex)
             {
                 string tableName = this.dbSchema.TableNamesIndented[tableIndex];
 
-                MapTableAndColumns(in dbDataAdapter, in tableName);
-                AddTableToDataSet(in tableName);
-                FillSchema(in dbDataAdapter, in tableName);
-                UpdatePrimaryKeyContraint(in tableName);
-                Fill(in dbDataAdapter, in tableName);
+                dbConnector.MapTableAndColumns("client_schedule", tableName);
+                AddTableToDataSet(tableName);
+                dbConnector.FillSchema(this.DataSet, tableName);
+                UpdatePrimaryKeyContraint(tableName);
+                dbConnector.Fill(this.DataSet, tableName);
             }
 
             for (var tableIndex = 0; tableIndex < tableCount; ++tableIndex)
@@ -91,7 +82,7 @@ namespace Scheduling_Library.Model.Data
 
                 DataColumn pkColumn = this.DataSet.Tables[tableName].PrimaryKey[0];
                 ChangePKAttributes(pkColumn, tableName);
-                CreatePrimaryAndForeingKeyRelation(in tableName);
+                CreatePrimaryAndForeingKeyRelation(tableName);
 
 /*
                 int columnCount = this.DataSet.Tables[tableName].Columns.Count;
@@ -114,45 +105,28 @@ namespace Scheduling_Library.Model.Data
                 //this.DataSet.Tables[tableName].AcceptChanges();
             }
 
-            //this.DataSet.AcceptChanges();
+            this.DataSet.AcceptChanges();
             mapped = true;
         }
 
-        public void Update<T>(String tableName, String ColumnName, T currentValue, T newValue)
+        public void Update<T>(string dbName, string tableName, string ColumnName, T currentValue, T newValue)
         {
-            IDbDataAdapter dbDataAdapter = this.dbConnector.DbDtAdapter;
             IQueryable<DataRow> query = (from row in this.DataSet.Tables[tableName].AsEnumerable()
-                        //where row.Field<T>(ColumnName) == value
                         where EqualityComparer<T>.Default.Equals(row.Field<T>(ColumnName), currentValue)
                         select row).AsQueryable();
 
             if (query.Count() > 0)
             {
                 query.First()[ColumnName] = newValue;
-                //this.DataSet.Tables[tableName].AcceptChanges();
 
-                dbDataAdapter.SelectCommand.CommandText = $"SELECT * FROM `{this.dbSchema.DbName}`.`{tableName}`;";
-
-                var mySqlCommand = new MySqlCommand();
-                mySqlCommand.Connection = (MySqlConnection)((MySqlConnector)this.dbConnector).dbConnection;
-
-                mySqlCommand.CommandText = $"UPDATE `{this.dbSchema.DbName}`.`{tableName}` SET customerName = @custName " + "WHERE customerID = @custID;";
-                mySqlCommand.Parameters.Add("@custName", MySqlDbType.VarChar);
-                mySqlCommand.Parameters.Add("@custID", MySqlDbType.Int32);
-
-                mySqlCommand.Parameters["@custName"].Value = newValue;
-                mySqlCommand.Parameters["@custID"].Value = 3;
-
-                ((MySqlDataAdapter)dbDataAdapter).UpdateCommand = mySqlCommand;
-                Console.WriteLine(((MySqlDataAdapter) dbDataAdapter).Update(this.DataSet, tableName));
+                this.dbConnector.Update(this.DataSet, dbName, tableName);
+                this.DataSet.Tables[tableName].AcceptChanges();
             }
         }
 
-        public void Delete<T>(String tableName, String ColumnName, T currentValue)
+        public void Delete<T>(string tableName, string ColumnName, T currentValue)
         {
-            IDbDataAdapter dbDataAdapter = this.dbConnector.DbDtAdapter;
             IQueryable<DataRow> query = (from row in this.DataSet.Tables[tableName].AsEnumerable()
-                                             //where row.Field<T>(ColumnName) == value
                                          where EqualityComparer<T>.Default.Equals(row.Field<T>(ColumnName), currentValue)
                                          select row).AsQueryable();
 
@@ -161,16 +135,14 @@ namespace Scheduling_Library.Model.Data
                 query.First().Delete();
                 this.DataSet.Tables[tableName].AcceptChanges();
 
-                
-
                 //SqlCommandBuilder builder = new SqlCommandBuilder(dbDataAdapter);
                 //adapter.UpdateCommand = builder.GetUpdateCommand();
-                dbDataAdapter.Update(this.DataSet);
+                //dbDataAdapter.Update(this.DataSet);
                 this.DataSet.AcceptChanges();
             }
         }
 
-        public void Insert(String tableName)
+        public void Insert(string tableName)
         {
             DataRow newRow = this.DataSet.Tables[tableName].NewRow();
 
@@ -179,46 +151,17 @@ namespace Scheduling_Library.Model.Data
             this.DataSet.Tables[tableName].Rows.Add(newRow);
         }
 
-
-        // https://learn.microsoft.com/en-us/dotnet/api/system.data.dataset?view=net-7.0
-        private void MapTableAndColumns(in IDbDataAdapter dbDataAdapter, in String tableName)
-        {
-            dbDataAdapter.SelectCommand.CommandText = $"SELECT * FROM `{this.dbSchema.DbName}`.`{tableName}`;"; ;
-            ITableMapping tableMapping = dbDataAdapter.TableMappings.Add(tableName, tableName);
-            IDataReader dataReader = dbDataAdapter.SelectCommand.ExecuteReader();
-
-            for (var fieldIdx = 0; fieldIdx < dataReader.FieldCount; ++fieldIdx)
-            {
-                tableMapping.ColumnMappings.Add(dataReader.GetName(fieldIdx), dataReader.GetName(fieldIdx));
-            }
-
-            if (!dataReader.IsClosed)
-            {
-                dataReader.Close();
-            }
-        }
-
-        private void AddTableToDataSet(in String tableName)
+        private void AddTableToDataSet(string tableName)
         {
             this.DataSet.Tables.Add(tableName);
         }
 
-        private void FillSchema(in IDbDataAdapter dbDataAdapter, in String tableName)
-        {
-            ((DbDataAdapter)dbDataAdapter).FillSchema(this.DataSet, SchemaType.Mapped, tableName);
-        }
-
-        private void Fill(in IDbDataAdapter dbDataAdapter, in String tableName)
-        {
-            ((DbDataAdapter)dbDataAdapter).Fill(this.DataSet, tableName);
-        }
-
-        private void UpdatePrimaryKeyContraint(in String tableName)
+        private void UpdatePrimaryKeyContraint(string tableName)
         {
             this.DataSet.Tables[tableName].Constraints[0].ConstraintName = $"{this.DataSet.Tables[tableName]}_PK";
         }
 
-        private void CreatePrimaryAndForeingKeyRelation(in String tableName)
+        private void CreatePrimaryAndForeingKeyRelation(string tableName)
         {
             int fkKeyCount = this.dbSchema.ForeignKeysNames[tableName].Length;
 
@@ -240,7 +183,7 @@ namespace Scheduling_Library.Model.Data
             }
         }
 
-        private void ChangePKAttributes(DataColumn pkColumn, in String tableName)
+        private void ChangePKAttributes(DataColumn pkColumn, string tableName)
         {
             int rowCount = this.DataSet.Tables[tableName].Rows.Count;
             string keyColumnName = pkColumn.ColumnName;
@@ -260,38 +203,6 @@ namespace Scheduling_Library.Model.Data
             {
                 column.DefaultValue = this.DataSet.Tables["user"].Rows[0]["userName"];
             }
-        }
-
-        private Task FillDataAsync(in IDbDataAdapter dbDataAdapter, in DataSet dataSet)
-        {
-            TaskCompletionSource<int> taskCompletionSource = new TaskCompletionSource<int>();
-            try
-            {
-                int result = dbDataAdapter.Fill(dataSet);
-                taskCompletionSource.SetResult(result);
-            }
-            catch (Exception exception)
-            {
-                taskCompletionSource.SetException(exception);
-            }
-
-            return taskCompletionSource.Task;
-        }
-
-        private Task SetSchemaAsync(in IDbDataAdapter dbDataAdapter, in DataSet dataSet)
-        {
-            TaskCompletionSource<DataTable[]> taskCompletionSource = new TaskCompletionSource<DataTable[]>();
-            try
-            {
-                DataTable[] result = dbDataAdapter.FillSchema(dataSet, SchemaType.Mapped);
-                taskCompletionSource.SetResult(result);
-            }
-            catch (Exception exception)
-            {
-                taskCompletionSource.SetException(exception);
-            }
-
-            return taskCompletionSource.Task;
         }
     }
 }

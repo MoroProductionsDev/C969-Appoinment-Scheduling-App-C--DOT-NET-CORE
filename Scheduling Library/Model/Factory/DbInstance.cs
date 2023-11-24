@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MySql.Data.MySqlClient;
+using Scheduling_Library.Model.Config;
 using Scheduling_Library.Model.Database;
 
 namespace Scheduling_Library.Model.Factory
@@ -40,80 +41,19 @@ namespace Scheduling_Library.Model.Factory
          *                                      
          * @return      A instance of a [IDatabaseConnector].
          */
-        public static IDbConnector CreateDatabaseConnector(Type connectionType, String connectionString)
+        public static DbConnector CreateDatabaseConnector(IDbConfig config)
         {
-            IDbConnector dbConnector = null;
-            switch(connectionType)
+            DbConnector dbConnector = null;
+            switch(config.GetType())
             {
-                case Type _ when typeof(MySqlConnection) == connectionType:
+                case Type _ when typeof(MySqlConfig) == config.GetType():
                 {
-                    dbConnector = new MySqlConnector(connectionType, connectionString);
+                    dbConnector = new DbConnector(config);
                     break;
                 }
             }
 
             return dbConnector;
-        }
-
-        /*
-         * Description: This function creates and returns a new [IDbConnection] object base on the type passed.
-         * 
-         * @param       [Type] connectionType       It carries a IDbConnection (Type) that will be use to create the
-         *                                          right object type.
-         *              [String] connectionString   A connection string configuration for the specific
-         *                                          database type.
-         *                                      
-         * @return      A instance of a [IDbConnection].
-         */
-        internal static IDbConnection CreateDbConnection(Type connectionType, String connectionString)
-        {
-            IDbConnection dbConnection = null;
-            switch (connectionType)
-            {
-                case Type _ when typeof(MySqlConnection) == connectionType:
-                    dbConnection = new MySqlConnection(connectionString);
-                    break;
-            }
-
-            return dbConnection;
-        }
-
-        /*
-         * Description: This function creates and returns a new [IDbCommand] object base on the type passed.
-         * 
-         * @param       [String] connectionString   A connection string configuration for the specific
-         *                                          database type.
-         *              [IDbConnection] connection       It carries a IDbConnection that will be use to create the
-         *                                               right command based on the connection object.
-         *              
-         * @return      A instance of a [IDbCommand].
-         */
-        internal static IDbCommand CreateDbCommand(String commandText, IDbConnection connection)
-        {
-            IDbCommand dbCommand = null;
-            switch (connection?.GetType())
-            {
-                case Type _ when typeof(MySqlConnection) == connection.GetType():
-                    dbCommand = new MySqlCommand(commandText, (MySqlConnection) connection);
-                    break;
-            }
-
-            return dbCommand;
-        }
-
-        // Set the SqlDataAdapter's SelectCommand.
-        // dbDataAdapter.SelectCommand = this.databaseConnector.CreateDbCommand(commandText).DbCommand;
-        internal static IDbDataAdapter CreateDbDataAdapter(IDbConnection connection)
-        {
-            IDbDataAdapter dbDataAdapter = null;
-            switch (connection?.GetType())
-            {
-                case Type _ when typeof(MySqlConnection) == connection.GetType():
-                    dbDataAdapter = new MySqlDataAdapter();
-                    break;
-            }
-
-            return dbDataAdapter;
         }
     }
 }
