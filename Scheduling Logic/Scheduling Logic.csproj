@@ -1,15 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
-    <RootNamespace>Scheduling_Console_App</RootNamespace>
+    <RootNamespace>Scheduling_Logic</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Scheduling API\Scheduling API.csproj" />
+    <PackageReference Include="MySql.Data" Version="8.2.0" />
   </ItemGroup>
 
 </Project>
