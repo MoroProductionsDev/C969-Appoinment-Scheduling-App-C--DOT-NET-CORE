@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scheduling API", "Schedulin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scheduling Logic", "Scheduling Logic\Scheduling Logic.csproj", "{1103E3DD-1385-40EF-8F58-8DF6C85E7075}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scheduling UI App", "Scheduling UI App\Scheduling UI App.csproj", "{4B00F362-26F1-4B99-AD06-32A59152599B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{1103E3DD-1385-40EF-8F58-8DF6C85E7075}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1103E3DD-1385-40EF-8F58-8DF6C85E7075}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1103E3DD-1385-40EF-8F58-8DF6C85E7075}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B00F362-26F1-4B99-AD06-32A59152599B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B00F362-26F1-4B99-AD06-32A59152599B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B00F362-26F1-4B99-AD06-32A59152599B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B00F362-26F1-4B99-AD06-32A59152599B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
