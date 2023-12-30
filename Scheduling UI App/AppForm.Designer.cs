@@ -2,7 +2,7 @@
 
 namespace Scheduling_UI_App
 {
-    partial class LoginForm
+    partial class AppForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -30,29 +30,37 @@ namespace Scheduling_UI_App
         /// </summary>
         private void InitializeComponent()
         {
-            loginControl1 = new LoginControl();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AppForm));
+            this.appStateBackgroundWorker = new System.ComponentModel.BackgroundWorker();
+            this.loginCanvas = new LoginCanvasControl();
             SuspendLayout();
             // 
-            // loginControl1
+            // loginCanvas
             // 
-            loginControl1.Location = new Point(86, 108);
-            loginControl1.Name = "loginControl1";
-            loginControl1.Size = new Size(382, 215);
-            loginControl1.TabIndex = 0;
+            this.loginCanvas.BackColor = SystemColors.Control;
+            this.loginCanvas.BackgroundImage = (Image)resources.GetObject("loginCanvas.BackgroundImage");
+            this.loginCanvas.Location = new Point(0, 0);
+            this.loginCanvas.Name = "loginCanvas";
+            this.loginCanvas.Size = new Size(554, 450);
+            this.loginCanvas.TabIndex = 0;
+            this.loginCanvas.Visible = false;
             // 
-            // LoginForm
+            // AppForm
             // 
             this.AutoScaleDimensions = new SizeF(7F, 15F);
             this.AutoScaleMode = AutoScaleMode.Font;
-            this.ClientSize = new Size(554, 450);
-            this.Controls.Add(loginControl1);
-            this.Name = "LoginForm";
+            this.BackColor = SystemColors.ButtonHighlight;
+            this.ClientSize = new Size(554, 449);
+            this.Controls.Add(this.loginCanvas);
+            this.Name = "AppForm";
             this.Text = "Scheduling Application";
+            this.Load += AppForm_Load;
             ResumeLayout(false);
         }
 
         #endregion
 
-        private LoginControl loginControl1;
+        private System.ComponentModel.BackgroundWorker appStateBackgroundWorker;
+        private LoginCanvasControl loginCanvas;
     }
 }

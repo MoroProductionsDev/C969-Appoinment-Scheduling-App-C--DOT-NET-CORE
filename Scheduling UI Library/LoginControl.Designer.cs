@@ -1,6 +1,4 @@
-﻿using Scheduling_UI_Library.UI_EventHandler;
-
-namespace Scheduling_UI_Library
+﻿namespace Scheduling_UI_Library
 {
     partial class LoginControl
     {
@@ -82,7 +80,7 @@ namespace Scheduling_UI_Library
             // 
             // signInBtn
             // 
-            signInBtn.Location = new Point(153, 141);
+            signInBtn.Location = new Point(154, 141);
             signInBtn.Name = "signInBtn";
             signInBtn.Size = new Size(60, 25);
             signInBtn.TabIndex = 4;

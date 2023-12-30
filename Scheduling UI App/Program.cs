@@ -1,3 +1,6 @@
+using Scheduling_API.Controller.State;
+using Scheduling_UI_App.UI_State;
+
 namespace Scheduling_UI_App
 {
     internal static class Program
@@ -11,7 +14,12 @@ namespace Scheduling_UI_App
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new LoginForm());
+            Application.Run(new AppForm());
+        }
+
+        internal static void Abort()
+        {
+            Application.Exit();
         }
     }
 }
