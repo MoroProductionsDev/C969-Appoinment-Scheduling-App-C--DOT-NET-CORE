@@ -38,10 +38,10 @@ namespace Scheduling_Logic.Model.Factory
          *                                      
          * @return      A instance of a [IDatabaseConnector].
          */
-        public static DbConnector CreateDatabaseConnector(IDbConfig config)
+        public static DbConnector? CreateDatabaseConnector(IDbConfig? config)
         {
-            DbConnector dbConnector = null;
-            switch(config.GetType())
+            DbConnector? dbConnector = null;
+            switch(config?.GetType())
             {
                 case Type _ when typeof(MySqlConfig) == config.GetType():
                 {

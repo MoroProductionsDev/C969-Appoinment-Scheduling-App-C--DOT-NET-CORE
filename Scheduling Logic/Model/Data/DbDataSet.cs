@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Scheduling_Logic.Model.Factory;
 using Scheduling_Logic.Model.Structure;
 using Scheduling_Logic.Model.Database;
+using System.Runtime.CompilerServices;
 
 namespace Scheduling_Logic.Model.Data
 {
@@ -37,17 +38,21 @@ namespace Scheduling_Logic.Model.Data
          *              It initialize this.dbSchema private field/object based on the [IDataReader] reference passed.
          *              It initialize this.dataSet private field/object based on the [DbSchema] reference passed.
          */
-        public DbDataSet(DbConnector dbConnector, DbSchema dbSchema)
+        public DbDataSet(DbConnector? dbConnector, DbSchema? dbSchema)
         {
-            this.dbConnector = dbConnector;
-            this.dbSchema = dbSchema;
-            this.DataSet = DataInstance.createDataSet(dbSchema.DbName);
+
+            ValidateForNullParamater(dbConnector, nameof(dbConnector));
+            ValidateForNullParamater(dbSchema, nameof(dbSchema));
+
+            this.dbConnector = dbConnector!;
+            this.dbSchema = dbSchema!;
+            this.DataSet = DataInstance.createDataSet(dbSchema!.DbName);
             this.mapped= false;
         }
 
         /*
-         * 
-        */
+        * 
+       */
         public void Mapping()
         {
             if (this.mapped)
@@ -61,11 +66,11 @@ namespace Scheduling_Logic.Model.Data
             {
                 string tableName = this.dbSchema.TableNamesIndented[tableIndex];
 
-                dbConnector.MapTableAndColumns(this.dbSchema.DbName, tableName);
+                dbConnector.MapTableAndColumns(this.dbSchema.DbName, tableName); // can throw DbException or InvalidOperationExcetion
                 AddTableToDataSet(tableName);
-                dbConnector.FillSchema(this.DataSet, tableName);
+                dbConnector.FillSchema(this.DataSet, tableName); // can throw Exception
                 UpdatePrimaryKeyContraint(tableName);
-                dbConnector.Fill(this.DataSet, tableName);
+                dbConnector.Fill(this.DataSet, tableName); // can throw SystemException
             }
 
             for (var tableIndex = 0; tableIndex < tableCount; ++tableIndex)
@@ -73,27 +78,27 @@ namespace Scheduling_Logic.Model.Data
 
                 string tableName = this.dbSchema.TableNamesIndented[tableIndex];
 
-                DataColumn pkColumn = this.DataSet.Tables[tableName].PrimaryKey[0];
+                DataColumn pkColumn = this.DataSet.Tables[tableName]!.PrimaryKey[0];
                 ChangePKAttributes(pkColumn, tableName);
                 CreatePrimaryAndForeingKeyRelation(tableName);
 
-/*
-                int columnCount = this.DataSet.Tables[tableName].Columns.Count;
+                /*
+                                int columnCount = this.DataSet.Tables[tableName].Columns.Count;
 
-                for (var colIdx = columnCount - 4; colIdx < columnCount; ++colIdx)
-                {
-                    DataColumn column = this.DataSet.Tables[tableName].Columns[colIdx];
+                                for (var colIdx = columnCount - 4; colIdx < columnCount; ++colIdx)
+                                {
+                                    DataColumn column = this.DataSet.Tables[tableName].Columns[colIdx];
 
-                    if (column.DataType == typeof(DateTime))
-                    {
-                        
-                        SetDefaultVal<DateTime>(column);
-                    }
-                    else
-                    {
-                        SetDefaultVal<String>(column);
-                    }
-                }*/
+                                    if (column.DataType == typeof(DateTime))
+                                    {
+
+                                        SetDefaultVal<DateTime>(column);
+                                    }
+                                    else
+                                    {
+                                        SetDefaultVal<String>(column);
+                                    }
+                                }*/
 
                 //this.DataSet.Tables[tableName].AcceptChanges();
             }
@@ -104,29 +109,33 @@ namespace Scheduling_Logic.Model.Data
 
         public void Update<T>(string dbName, string tableName, string ColumnName, T currentValue, T newValue)
         {
-            IQueryable<DataRow> query = (from row in this.DataSet.Tables[tableName].AsEnumerable()
-                        where EqualityComparer<T>.Default.Equals(row.Field<T>(ColumnName), currentValue)
-                        select row).AsQueryable();
+            ValidateIfDataIsMapped();
+
+            IQueryable<DataRow> query = (from row in this.DataSet.Tables[tableName]!.AsEnumerable()
+                                         where EqualityComparer<T>.Default.Equals(row.Field<T>(ColumnName), currentValue)
+                                         select row).AsQueryable();
 
             if (query.Count() > 0)
             {
                 query.First()[ColumnName] = newValue;
 
                 this.dbConnector.Update(this.DataSet, dbName, tableName);
-                this.DataSet.Tables[tableName].AcceptChanges();
+                this.DataSet.Tables[tableName]!.AcceptChanges();
             }
         }
 
         public void Delete<T>(string tableName, string ColumnName, T currentValue)
         {
-            IQueryable<DataRow> query = (from row in this.DataSet.Tables[tableName].AsEnumerable()
+            ValidateIfDataIsMapped();
+
+            IQueryable<DataRow> query = (from row in this.DataSet.Tables[tableName]!.AsEnumerable()
                                          where EqualityComparer<T>.Default.Equals(row.Field<T>(ColumnName), currentValue)
                                          select row).AsQueryable();
 
             if (query.Count() > 0)
             {
                 query.First().Delete();
-                this.DataSet.Tables[tableName].AcceptChanges();
+                this.DataSet.Tables[tableName]!.AcceptChanges();
 
                 //SqlCommandBuilder builder = new SqlCommandBuilder(dbDataAdapter);
                 //adapter.UpdateCommand = builder.GetUpdateCommand();
@@ -137,11 +146,41 @@ namespace Scheduling_Logic.Model.Data
 
         public void Insert(string tableName)
         {
-            DataRow newRow = this.DataSet.Tables[tableName].NewRow();
+            ValidateIfDataIsMapped();
+
+            DataRow newRow = this.DataSet.Tables[tableName]!.NewRow();
 
             newRow["customerName"] = "Peppe";
 
-            this.DataSet.Tables[tableName].Rows.Add(newRow);
+            this.DataSet.Tables[tableName]!.Rows.Add(newRow);
+        }
+
+        private void ValidateForNullParamater(object? param, string paramName, [CallerMemberName] string callerName = "")
+        {
+            if (param is null)
+            {
+                throw new DataClassNullException("<Scheduling_Logic.Model.Data>(DbDataSet)",
+                new ArgumentNullException(nameof(param),
+                    $"[{callerName}][{paramName}] cannot be null."));
+            }
+        }
+
+        private void ValidateForNullClassVariable(object? variable, string variableName, [CallerMemberName] string callerName = "")
+        {
+            if (variable is null)
+            {
+                throw new DataClassNullException("<Scheduling_Logic.Model.Data>(DbDataSet)\n" +
+                    $"[{callerName}][{variableName}] cannot be null.");
+            }
+        }
+
+        private void ValidateIfDataIsMapped()
+        {
+            if (!this.mapped)
+            {
+                throw new InvalidOperationException("<Scheduling_Logic.Model.Data>(DbDataSet)\n" +
+                    $"{nameof(this.DataSet)} has not been mapped yet.");
+            }
         }
 
         private void AddTableToDataSet(string tableName)
@@ -151,7 +190,7 @@ namespace Scheduling_Logic.Model.Data
 
         private void UpdatePrimaryKeyContraint(string tableName)
         {
-            this.DataSet.Tables[tableName].Constraints[0].ConstraintName = $"{this.DataSet.Tables[tableName]}_PK";
+            this.DataSet.Tables[tableName]!.Constraints[0].ConstraintName = $"{this.DataSet.Tables[tableName]}_PK";
         }
 
         private void CreatePrimaryAndForeingKeyRelation(string tableName)
@@ -165,8 +204,8 @@ namespace Scheduling_Logic.Model.Data
 
                 if (String.Empty != pkTableName)
                 {
-                    DataColumn primaryKey = this.DataSet.Tables[pkTableName].PrimaryKey[0];
-                    DataColumn foreignKey = this.DataSet.Tables[tableName].Columns[fkColumnName];
+                    DataColumn primaryKey = this.DataSet.Tables[pkTableName]!.PrimaryKey[0];
+                    DataColumn foreignKey = this.DataSet.Tables[tableName]!.Columns[fkColumnName]!;
 
                     foreignKey.ReadOnly = true;
 
@@ -178,16 +217,16 @@ namespace Scheduling_Logic.Model.Data
 
         private void ChangePKAttributes(DataColumn pkColumn, string tableName)
         {
-            int rowCount = this.DataSet.Tables[tableName].Rows.Count;
+            int rowCount = this.DataSet.Tables[tableName]!.Rows.Count;
             string keyColumnName = pkColumn.ColumnName;
-            int autoIncrementSeed = (int)this.DataSet.Tables[tableName].Rows[rowCount - 1][keyColumnName];
+            int autoIncrementSeed = (int) this.DataSet.Tables[tableName]!.Rows[rowCount - 1][keyColumnName];
 
             pkColumn.AutoIncrementSeed = autoIncrementSeed + 1;
             pkColumn.Unique = true;
             pkColumn.ReadOnly = true;
         }
 
-        private void SetDefaultVal<T>(DataColumn column)
+/*        private void SetDefaultVal<T>(DataColumn column)
         {
             if (typeof(T) == typeof(DateTime))
             {
@@ -196,6 +235,6 @@ namespace Scheduling_Logic.Model.Data
             {
                 column.DefaultValue = this.DataSet.Tables["user"].Rows[0]["userName"];
             }
-        }
+        }*/
     }
 }

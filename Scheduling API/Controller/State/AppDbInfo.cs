@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace Scheduling_API.Model.State
+namespace Scheduling_API.Controller.State
 {
     public static class AppDbInfo
     {

@@ -35,25 +35,13 @@ namespace Scheduling_Logic.Model.Factory
          *                                      
          * @return      A instance of a [DbDataSet].
          */
-        public static DbDataSet CreateDbDataTable(DbConnector dbConnector, DbSchema dbSchema)
+        public static DbDataSet CreateDbDataTable(DbConnector? dbConnector, DbSchema? dbSchema)
         {
-            return new DbDataSet(dbConnector, dbSchema);
+             return new DbDataSet(dbConnector, dbSchema);
         }
 
-        /*
-         * Description: This function creates and returns a new [DataTable] object.
-         *                                      
-         * @return      A instance of a [DataTable].
-         */
-
-        public static DataTable createDataTable(in String dtTableName)
-        {
-            return new DataTable(dtTableName);
-        }
-
-        public static DataSet createDataSet(in String dtSetName) { 
+        internal static DataSet createDataSet(string dtSetName) { 
             return new DataSet(dtSetName); 
         }
-
     }
 }

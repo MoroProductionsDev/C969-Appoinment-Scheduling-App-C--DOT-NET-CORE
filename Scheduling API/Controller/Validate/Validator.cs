@@ -13,9 +13,9 @@ namespace Scheduling_API.Controller.Validate
 {
     internal static class Validator
     {
-        public static bool CheckCredentials(AppState appState)
+        internal static bool CheckCredentials(AppState appState)
         {
-            DataTable userTable = appState.DbDataSet.DataSet.Tables[ClientScheduleTableName.User];
+            DataTable userTable = appState.DbDataSet.DataSet.Tables[ClientScheduleTableName.User]!;
             string userName = appState.AppData.UserRecord.UserName;
             string password = appState.AppData.UserRecord.Password;
 

@@ -11,12 +11,16 @@ using Scheduling_Logic.Model.Data;
 using Scheduling_Logic.Model.Config;
 using Scheduling_Logic.Model.Database;
 using Scheduling_API.Controller.State;
-using Scheduling_API.Model.State;
 
 namespace Scheduling_API.Controller.Factory
 {
     public static class AppFactory
     {
+        public static AppState BuildAppState(IDbConfig? dbConfig, string dbName)
+        {
+            return new AppState(dbConfig, dbName);
+        }
+
         /*
          * Description: Identify the required fields to create the database connection and database connector properties.
          * 
@@ -41,11 +45,6 @@ namespace Scheduling_API.Controller.Factory
             }
 
             return dbConfig;
-        }
-
-        public static AppState BuildAppState(IDbConfig dbConfig, string dbName)
-        {
-            return new AppState(dbConfig, dbName);
         }
 
         internal static DbSchema? BuildDbSchema(string dbName)
@@ -75,14 +74,15 @@ namespace Scheduling_API.Controller.Factory
             return appData;
         }
 
-        internal static DbConnector BuildDatabaseConnector(IDbConfig dbConfig)
+        internal static DbConnector? BuildDatabaseConnector(IDbConfig dbConfig)
         {
             return DbInstance.CreateDatabaseConnector(dbConfig);
         }
 
-        internal static DbDataSet BuildDatabaseDataSet(AppState appState)
+        // Must have checked for nulls
+        internal static DbDataSet? BuildDatabaseDataSet(AppState appState)
         {
-            return DataInstance.CreateDbDataTable(appState.DbConnector, appState.DbSchema);
+            return DataInstance.CreateDbDataTable(appState.DbConnector!, appState.DbSchema!);
         }
     }
 }

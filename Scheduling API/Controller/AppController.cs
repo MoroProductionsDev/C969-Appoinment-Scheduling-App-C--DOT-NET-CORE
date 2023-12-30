@@ -6,7 +6,6 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Scheduling_API.Controller.State;
-using Scheduling_API.Controller.Validate;
 using Scheduling_Logic.Model.Structure;
 using static Scheduling_Logic.Model.Structure.ClientScheduleDbSchema;
 
@@ -14,19 +13,19 @@ namespace Scheduling_API.Controller
 {
     public static class AppController
     {
-        public static void AuthenticateLogIn(AppState appState)
+        public static void AuthenticateLogIn(AppState? appState)
         {
-            Validator.CheckCredentials(appState);
+            appState?.Authenticate();
         }
 
-        public static void MapDataBaseToDataSet(AppState appState)
+        public static void MapDataBaseToDataSet(AppState? appState)
         {
-            appState.DbDataSet.Mapping();
+            appState?.DbDataSet.Mapping();
         }
 
-        public static void AddCustomerRecord(AppState appState)
+        public static void AddCustomerRecord(AppState? appState)
         {
-            appState.DbDataSet.Insert(ClientScheduleTableName.Customer);
+            appState?.DbDataSet.Insert(ClientScheduleTableName.Customer);
 
 
             /*            appState.AppData.CustomerRecord.CustomerName = "Pedro";
@@ -94,9 +93,9 @@ namespace Scheduling_API.Controller
                     });*/
         }
 
-        public static void UpdateCustomerRecord(AppState appState)
+        public static void UpdateCustomerRecord(AppState? appState)
         {
-            appState.DbDataSet.Update<string>(ClientScheduleDbSchema._dbName,  ClientScheduleTableName.Customer, CustomerColumnName.CustomerName, "Ina Prufung", "Moro Men");
+            appState?.DbDataSet.Update<string>(ClientScheduleDbSchema._dbName,  ClientScheduleTableName.Customer, CustomerColumnName.CustomerName, "Ina Prufung", "Moro Men");
 
             //appState.AppData.CustomerRecord.CustomerName = "Pepe";
 /*            var dtRows = appState.DbDataSet.DataSet.Tables[ClientScheduleTableName.Customer].Rows.Find(9);
@@ -114,8 +113,8 @@ s
             //Validator.DidValueChange(appState, ClientScheduleTableName.Customer);
         }
 
-        public static void DeleteCustomerRecord(AppState appState) {
-            appState.DbDataSet.Delete<string>(ClientScheduleTableName.Customer, CustomerColumnName.CustomerName, "Moro Men");
+        public static void DeleteCustomerRecord(AppState? appState) {
+            appState?.DbDataSet.Delete<string>(ClientScheduleTableName.Customer, CustomerColumnName.CustomerName, "Moro Men");
         }
     }
 }

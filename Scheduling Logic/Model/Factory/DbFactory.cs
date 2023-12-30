@@ -12,11 +12,11 @@ namespace Scheduling_Logic.Model.Factory
 {
     internal static class DbFactory
     {
-        internal static DbProviderFactory CreateDbProviderFactory(IDbConfig config)
+        internal static DbProviderFactory? CreateDbProviderFactory(IDbConfig? config)
         {
-            DbProviderFactory dbProviderFactory = null;
+            DbProviderFactory? dbProviderFactory = null;
 
-            if (config.GetType() == typeof(MySqlConfig))
+            if (config?.GetType() == typeof(MySqlConfig))
             {   
                 dbProviderFactory = MySqlClientFactory.Instance;
             }

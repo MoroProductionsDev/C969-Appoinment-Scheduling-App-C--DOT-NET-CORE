@@ -32,22 +32,22 @@ namespace Scheduling_Logic.Model.Structure
 
         private static readonly Dictionary<string, string[]> _foreignKeys = new Dictionary<string, string[]>()
         {
-            {ClientScheduleTableName.User, new[]{String.Empty} },
+            {ClientScheduleTableName.User, new[]{ string.Empty} },
             {ClientScheduleTableName.Appointment, new []{ AppointmentColumnName.CustomerId, AppointmentColumnName .UserID} },
             {ClientScheduleTableName.Customer, new[] {CustomerColumnName.AddressId} },
             {ClientScheduleTableName.Address, new[] {AddressColumnName.CityId} },
             {ClientScheduleTableName.City, new[] {CityColumnName.CountryId} },
-            {ClientScheduleTableName.Country, new[] {String.Empty } }
+            {ClientScheduleTableName.Country, new[] { string.Empty } }
         };
 
         private static readonly Dictionary<string, string[]> _fkTablesContraints = new Dictionary<string, string[]>()
         {
-            {ClientScheduleTableName.User, new[]{String.Empty} },
+            {ClientScheduleTableName.User, new[]{ string.Empty} },
             {ClientScheduleTableName.Appointment, new []{ClientScheduleTableName.Customer, ClientScheduleTableName.User} },
             {ClientScheduleTableName.Customer, new[] {ClientScheduleTableName.Address} },
             {ClientScheduleTableName.Address, new[] {ClientScheduleTableName.City} },
             {ClientScheduleTableName.City, new[] {ClientScheduleTableName.Country} },
-            {ClientScheduleTableName.Country, new[] {String.Empty } }
+            {ClientScheduleTableName.Country, new[] {string.Empty } }
         };
 
         public override string DbName { get => _dbName; }
