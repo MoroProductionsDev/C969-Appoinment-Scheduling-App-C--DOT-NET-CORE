@@ -1,7 +1,9 @@
 using Scheduling_API.Controller.State;
+using Scheduling_UI_App.Properties;
 using Scheduling_UI_App.UI_State;
 using Scheduling_UI_Library;
 using System.Data.Common;
+using System.Resources;
 
 // https://stackoverflow.com/questions/142003/cross-thread-operation-not-valid-control-accessed-from-a-thread-other-than-the
 namespace Scheduling_UI_App
@@ -10,6 +12,7 @@ namespace Scheduling_UI_App
     {
         // Private
         private event EventHandler onException;
+        public event EventHandler onAuthencation;
         private AppState? appState;
 
         // Public/Internal
@@ -22,36 +25,41 @@ namespace Scheduling_UI_App
             InitializeComponent();
 
             // 2) Events subscription
-            this.appStateBackgroundWorker.DoWork += AppStateBackgroundWorker_DoWork;
-            this.appStateBackgroundWorker.RunWorkerCompleted += AppStateBackgroundWorker_RunWorkerCompleted;
-            this.onException += handleException;
+            this.appStateBackgroundWorker.DoWork += AppStateBackgroundWorker_DoWork!;
+            this.appStateBackgroundWorker.RunWorkerCompleted += AppStateBackgroundWorker_RunWorkerCompleted!;
+            this.onException += handleException!;
+            this.onAuthencation += AccessAppointment!;
+            this.loginCanvas.Controls[LoginControl.ControlName].Controls["signInBtn"].Click += this.onAuthencation;
         }
 
         // Destructor
         ~AppForm()
         {
             // Events unsubscription
-            this.appStateBackgroundWorker.DoWork -= AppStateBackgroundWorker_DoWork;
-            this.appStateBackgroundWorker.RunWorkerCompleted -= AppStateBackgroundWorker_RunWorkerCompleted;
-            this.onException -= handleException;
+            this.appStateBackgroundWorker.DoWork -= AppStateBackgroundWorker_DoWork!;
+            this.appStateBackgroundWorker.RunWorkerCompleted -= AppStateBackgroundWorker_RunWorkerCompleted!;
+            this.onException -= handleException!;
+            this.onAuthencation -= AccessAppointment!;
         }
 
         private void AppForm_Load(object sender, EventArgs e)
         {
+            ShowControls(this.Controls, false);
+
             ChangeBackgroundColor(this.Controls);
 
             // Run worker asynchronously
             appStateBackgroundWorker.RunWorkerAsync();
         }
 
-        private void AppStateBackgroundWorker_DoWork(object? sender, System.ComponentModel.DoWorkEventArgs e)
+        private void AppStateBackgroundWorker_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
             try
             {
                 // Execute UI updates on the UI thread
-                loginCanvas.Invoke(() =>
+                Invoke(() =>
                 {
-                    ShowControls(this.Controls, true); // show all the controls
+                    ShowControls(loginCanvas, true); // show all the controls
                     ((LoadingControl)loginCanvas.Controls[LoadingControl.ControlName]).LoadingAnimation(true);
                 });
 
@@ -76,19 +84,39 @@ namespace Scheduling_UI_App
             finally
             {
                 // Execute UI updates on the UI thread
-                loginCanvas.Invoke(() =>
+                Invoke(() =>
                 {
                     ((LoadingControl)loginCanvas.Controls[LoadingControl.ControlName]).LoadingAnimation(false);
                 });
             }
         }
 
-        private void AppStateBackgroundWorker_RunWorkerCompleted(object? sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
+        private void AppStateBackgroundWorker_RunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
 
         }
 
-        private void handleException(object? sender, EventArgs e)
+        private void AccessAppointment(object sender, EventArgs e)
+        {
+            if (((LoginControl)this.loginCanvas.Controls[LoginControl.ControlName]).authenticated is not true)
+            {
+                return;
+            }
+
+
+            Invoke(() =>
+            {
+                loginCanvas.Dispose();
+            });
+
+            Invoke(() =>
+            {
+                appointmentCanvas.Visible = true;
+                ShowControls(appointmentCanvas, true);
+            });
+        }
+
+        private void handleException(object sender, EventArgs e)
         {
             if (sender is not null && sender.GetType().Equals(typeof(LoginCanvasControl)))
             {
@@ -102,14 +130,28 @@ namespace Scheduling_UI_App
             {
                 if (show)
                 {
-                    control.Visible = show;  // true
+                    control.Visible = true;
                     control.Enabled = true;
                 }
                 else
                 {
-                    control.Visible = !show; // false
+                    control.Visible = false;
                     control.Enabled = false;
                 }
+            }
+        }
+
+        private void ShowControls(Control control, bool show)
+        {
+            if (show)
+            {
+                control.Visible = true;
+                control.Enabled = true;
+            }
+            else
+            {
+                control.Visible = false;
+                control.Enabled = false;
             }
         }
 
@@ -118,6 +160,39 @@ namespace Scheduling_UI_App
             foreach (Control control in controls)
             {
                 control.BackColor = Color.Transparent;
+            }
+        }
+
+        private void ScaleBackgroundImage(object sender, EventArgs e)
+        {
+            if (this.Width * 1 == this.Height * 1)
+            {
+                this.BackgroundImage = new Bitmap(Properties.Resources.Section_099_ThankYou_BG_Img_Ornament_Ratio_1_1_Square, this.Width, this.Height);
+            } else if (this.Width * 2 < this.Height * 3 && this.Width > this.Height)
+            {
+                this.BackgroundImage = new Bitmap(Properties.Resources.Section_099_ThankYou_BG_Img_Ornament_Ratio_3_2, this.Width, this.Height);
+            }
+            else if (this.Height * 3 > this.Width * 2 && this.Height > this.Width)
+            {
+                this.BackgroundImage = new Bitmap(Properties.Resources.Section_099_ThankYou_BG_Img_Ornament_Ratio_2_3, this.Width, this.Height);
+            }
+            else if (this.Height * 5 > this.Width * 4 && this.Height > this.Width)
+            {
+                this.BackgroundImage = Properties.Resources.Section_099_ThankYou_BG_Img_Ornament_Ratio_4_5_Portrait;
+            }
+            else if (this.Width * 3 < this.Height * 4 && this.Width > this.Height)
+            {
+                this.BackgroundImage = new Bitmap(Properties.Resources.Section_099_ThankYou_BG_Img_Ornament_Ratio_4_3, this.Width, this.Height);
+            }
+            else if (this.Width * 9 < this.Height * 16 && this.Width > this.Height)
+            {
+                this.BackgroundImage = new Bitmap(Properties.Resources.Section_099_ThankYou_BG_Img_Ornament_Ratio_16_9_Landscape, this.Width, this.Height);
+            } else if (this.Height * 16 > this.Width * 9 && this.Height > this.Width)
+            {
+                this.BackgroundImage = new Bitmap(Properties.Resources.Section_099_ThankYou_BG_Img_Ornament_Ratio_9_16_Story, this.Width, this.Height);
+            } else
+            {
+                this.BackgroundImage = this.BackgroundImage = new Bitmap(Properties.Resources.Section_099_ThankYou_BG_Img_Ornament_Ratio_16_9_Landscape, this.Width, this.Height);
             }
         }
     }

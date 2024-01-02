@@ -19,6 +19,7 @@ namespace Scheduling_UI_Library
     public partial class LoginControl : UserControl
     {
         public const string ControlName = nameof(LoginControl);
+        public bool authenticated = false;
 
         const int ToolTipTimeDisplayed = 5000;
         private AppState? _appState;
@@ -72,8 +73,7 @@ namespace Scheduling_UI_Library
 
                 AppController.AuthenticateLogIn(this._appState);
 
-                // This will be change to trigger a new controller
-                userNameTxtBox.Text = this._appState.Authenticated.ToString();
+                this.authenticated = this._appState.Authenticated;
             }
         }
     }

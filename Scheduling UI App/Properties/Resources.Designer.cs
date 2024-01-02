@@ -63,9 +63,79 @@ namespace Scheduling_UI_App.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament {
+        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_1_1_Square {
             get {
-                object obj = ResourceManager.GetObject("Section-099-ThankYou-BG-Img-Ornament", resourceCulture);
+                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_1_1_Square", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_1_91_1_Landscape {
+            get {
+                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_1_91_1_Landscape", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_16_9_Landscape {
+            get {
+                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_16_9_Landscape", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_2_3 {
+            get {
+                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_2_3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_3_2 {
+            get {
+                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_3_2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_4_3 {
+            get {
+                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_4_3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_4_5_Portrait {
+            get {
+                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_4_5_Portrait", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_9_16_Story {
+            get {
+                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_9_16_Story", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
