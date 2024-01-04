@@ -168,7 +168,8 @@ namespace Scheduling_UI_App
             if (this.Width * 1 == this.Height * 1)
             {
                 this.BackgroundImage = new Bitmap(Properties.Resources.Section_099_ThankYou_BG_Img_Ornament_Ratio_1_1_Square, this.Width, this.Height);
-            } else if (this.Width * 2 < this.Height * 3 && this.Width > this.Height)
+            }
+            else if (this.Width * 2 < this.Height * 3 && this.Width > this.Height)
             {
                 this.BackgroundImage = new Bitmap(Properties.Resources.Section_099_ThankYou_BG_Img_Ornament_Ratio_3_2, this.Width, this.Height);
             }
@@ -187,10 +188,12 @@ namespace Scheduling_UI_App
             else if (this.Width * 9 < this.Height * 16 && this.Width > this.Height)
             {
                 this.BackgroundImage = new Bitmap(Properties.Resources.Section_099_ThankYou_BG_Img_Ornament_Ratio_16_9_Landscape, this.Width, this.Height);
-            } else if (this.Height * 16 > this.Width * 9 && this.Height > this.Width)
+            }
+            else if (this.Height * 16 > this.Width * 9 && this.Height > this.Width)
             {
                 this.BackgroundImage = new Bitmap(Properties.Resources.Section_099_ThankYou_BG_Img_Ornament_Ratio_9_16_Story, this.Width, this.Height);
-            } else
+            }
+            else
             {
                 this.BackgroundImage = this.BackgroundImage = new Bitmap(Properties.Resources.Section_099_ThankYou_BG_Img_Ornament_Ratio_16_9_Landscape, this.Width, this.Height);
             }
