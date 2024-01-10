@@ -71,6 +71,7 @@ namespace Scheduling_Logic.Model.Structure
             public const string UserId = "userId";
             public const string UserName = "userName";
             public const string Password = "password";
+            public const string Active = "active";
         }
 
         public static class AppointmentColumnName
@@ -125,6 +126,85 @@ namespace Scheduling_Logic.Model.Structure
             public const string CreatedBy = "createdBy";
             public const string LastUpdate = "lastUpdate";
             public const string LastUpdateBy = "lastUpdateBy";
+        }
+
+        public string[] GetCountryColumnNames()
+        {
+            return new[]
+            {
+                $"{CountryColumnName.CountryId}",
+                $"{CountryColumnName.Country}",
+                $"{AllInCommonColumns.CreateDate}",
+                $"{AllInCommonColumns.CreatedBy}",
+                $"{AllInCommonColumns.LastUpdate}",
+                $"{AllInCommonColumns.LastUpdateBy}"
+            };
+        }
+
+        public string[] GetCityColumnNames()
+        {
+            return new[]
+            {
+                $"{CityColumnName.CityId}",
+                $"{CityColumnName.City}",
+                $"{CityColumnName.CountryId}",
+                $"{AllInCommonColumns.CreateDate}",
+                $"{AllInCommonColumns.CreatedBy}",
+                $"{AllInCommonColumns.LastUpdate}",
+                $"{AllInCommonColumns.LastUpdateBy}"
+            };
+        }
+
+        public string[] GetAddressColumnNames()
+        {
+            return new[]
+            {
+                $"{AddressColumnName.AddressId}",
+                $"{AddressColumnName.Address}",
+                $"{AddressColumnName.Address2}",
+                $"{AddressColumnName.CityId}",
+                $"{AddressColumnName.PostalCode}",
+                $"{AddressColumnName.Phone}",
+                $"{AllInCommonColumns.CreateDate}",
+                $"{AllInCommonColumns.CreatedBy}",
+                $"{AllInCommonColumns.LastUpdate}",
+                $"{AllInCommonColumns.LastUpdateBy}"
+            };
+        }
+
+        public string[] GetCustomerColumnNames()
+        {
+            return new[]
+            {
+                $"{CustomerColumnName.CustomerId}",
+                $"{CustomerColumnName.CustomerName}",
+                $"{CustomerColumnName.AddressId}",
+                $"{CustomerColumnName.Active}",
+                $"{AllInCommonColumns.CreateDate}",
+                $"{AllInCommonColumns.CreatedBy}",
+                $"{AllInCommonColumns.LastUpdate}",
+                $"{AllInCommonColumns.LastUpdateBy}"
+            };
+        }
+
+        public string[] GetAppointmentColumnNames()
+        {
+            return new[]
+            {
+                $"{AppointmentColumnName.AppointmentId}",
+                $"{AppointmentColumnName.CustomerId}",
+                $"{AppointmentColumnName.UserID}",
+                $"{AppointmentColumnName.Title}",
+                $"{AppointmentColumnName.Location}",
+                $"{AppointmentColumnName.Type}",
+                $"{AppointmentColumnName.Url}",
+                $"{AppointmentColumnName.Start}",
+                $"{AppointmentColumnName.End}",
+                $"{AllInCommonColumns.CreateDate}",
+                $"{AllInCommonColumns.CreatedBy}",
+                $"{AllInCommonColumns.LastUpdate}",
+                $"{AllInCommonColumns.LastUpdateBy}"
+            };  
         }
     }
 }

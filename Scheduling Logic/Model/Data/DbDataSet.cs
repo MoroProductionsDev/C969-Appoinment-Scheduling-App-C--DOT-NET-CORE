@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MySql.Data.MySqlClient;
+using Scheduling_Logic.Model.Database;
 using Scheduling_Logic.Model.Factory;
 using Scheduling_Logic.Model.Structure;
-using Scheduling_Logic.Model.Database;
+using System.Collections;
+using System.Data;
 using System.Runtime.CompilerServices;
 
 namespace Scheduling_Logic.Model.Data
@@ -25,7 +22,7 @@ namespace Scheduling_Logic.Model.Data
     {
         private readonly DbConnector dbConnector;
         private readonly DbSchema dbSchema;
-        private bool mapped;
+        public bool Mapped { get; private set; }
         public DataSet DataSet { get; private set; }
 
         /*
@@ -47,7 +44,7 @@ namespace Scheduling_Logic.Model.Data
             this.dbConnector = dbConnector!;
             this.dbSchema = dbSchema!;
             this.DataSet = DataInstance.createDataSet(dbSchema!.DbName);
-            this.mapped= false;
+            this.Mapped= false;
         }
 
         /*
@@ -55,7 +52,7 @@ namespace Scheduling_Logic.Model.Data
        */
         public void Mapping()
         {
-            if (this.mapped)
+            if (this.Mapped)
             {
                 return;
             }
@@ -80,31 +77,11 @@ namespace Scheduling_Logic.Model.Data
 
                 DataColumn pkColumn = this.DataSet.Tables[tableName]!.PrimaryKey[0];
                 ChangePKAttributes(pkColumn, tableName);
-                CreatePrimaryAndForeingKeyRelation(tableName);
-
-                /*
-                                int columnCount = this.DataSet.Tables[tableName].Columns.Count;
-
-                                for (var colIdx = columnCount - 4; colIdx < columnCount; ++colIdx)
-                                {
-                                    DataColumn column = this.DataSet.Tables[tableName].Columns[colIdx];
-
-                                    if (column.DataType == typeof(DateTime))
-                                    {
-
-                                        SetDefaultVal<DateTime>(column);
-                                    }
-                                    else
-                                    {
-                                        SetDefaultVal<String>(column);
-                                    }
-                                }*/
-
-                //this.DataSet.Tables[tableName].AcceptChanges();
+                CreatePrimaryAndForeingKeyRelation(tableName);;
             }
 
             this.DataSet.AcceptChanges();
-            mapped = true;
+            Mapped = true;
         }
 
         public void Update<T>(string dbName, string tableName, string ColumnName, T currentValue, T newValue)
@@ -144,15 +121,20 @@ namespace Scheduling_Logic.Model.Data
             }
         }
 
-        public void Insert(string tableName)
+        public void Insert(string tableName, string insertStatement, string[] columnNames, ArrayList columnValues)
         {
             ValidateIfDataIsMapped();
 
             DataRow newRow = this.DataSet.Tables[tableName]!.NewRow();
 
-            newRow["customerName"] = "Peppe";
+            for (int idx = 0; idx < columnNames.Length; ++idx)
+            {
+                newRow[columnNames[idx]] = columnValues[idx];
+            }
 
             this.DataSet.Tables[tableName]!.Rows.Add(newRow);
+            this.dbConnector.Insert(this.DataSet, tableName, insertStatement, columnNames, columnValues);
+            this.DataSet.Tables[tableName]!.AcceptChanges();
         }
 
         private void ValidateForNullParamater(object? param, string paramName, [CallerMemberName] string callerName = "")
@@ -176,7 +158,7 @@ namespace Scheduling_Logic.Model.Data
 
         private void ValidateIfDataIsMapped()
         {
-            if (!this.mapped)
+            if (!this.Mapped)
             {
                 throw new InvalidOperationException("<Scheduling_Logic.Model.Data>(DbDataSet)\n" +
                     $"{nameof(this.DataSet)} has not been mapped yet.");
@@ -225,16 +207,5 @@ namespace Scheduling_Logic.Model.Data
             pkColumn.Unique = true;
             pkColumn.ReadOnly = true;
         }
-
-/*        private void SetDefaultVal<T>(DataColumn column)
-        {
-            if (typeof(T) == typeof(DateTime))
-            {
-                column.DefaultValue = DateTime.UtcNow.ToString();
-            } else
-            {
-                column.DefaultValue = this.DataSet.Tables["user"].Rows[0]["userName"];
-            }
-        }*/
     }
 }

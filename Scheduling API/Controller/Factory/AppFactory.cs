@@ -39,7 +39,7 @@ namespace Scheduling_API.Controller.Factory
 
             switch (providerName)
             {
-                case AppDbInfo.MySqlClient:
+                case AppInfo.MySqlClientNameSpace:
                     dbConfig = new MySqlConfig();
                     break;
             }
@@ -53,7 +53,7 @@ namespace Scheduling_API.Controller.Factory
 
             switch (dbName)
             {
-                case AppDbInfo.ClientScheduleDbName:
+                case AppInfo.ClientScheduleDbName:
                     dbSchema = new ClientScheduleDbSchema();
                     break;
             }
@@ -66,7 +66,7 @@ namespace Scheduling_API.Controller.Factory
 
             switch (dbName)
             {
-                case AppDbInfo.ClientScheduleDbName:
+                case AppInfo.ClientScheduleDbName:
                     appData = new AppData();
                     break;
             }

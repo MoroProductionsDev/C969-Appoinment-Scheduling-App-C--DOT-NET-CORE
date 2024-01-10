@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -195,15 +196,16 @@ namespace Scheduling_Logic.Model.Database
             // Validate for nulls. (local variable)
             ValidateForNullClassVariable(sqlCommandBuilder, nameof(sqlCommandBuilder));
 
-            this.dbDataAdapter.SelectCommand!.CommandText = $"SELECT * FROM `{dbName}`.`{tableName}`;";
+            this.dbDataAdapter.UpdateCommand!.CommandText = $"SELECT * FROM `{dbName}`.`{tableName}`;"; // *
             sqlCommandBuilder.DataAdapter = this.dbDataAdapter;
             sqlCommandBuilder.GetUpdateCommand();
 
             return this.dbDataAdapter.Update(dataSet, tableName);
         }
 
-        public void Insert(DataSet dataSet, string tableName)
+        public int Insert(DataSet dataSet, string tableName, string insertStatement, string[] columnNames, ArrayList columnValues)
         {
+            int lastRow = dataSet.Tables[tableName]!.Rows.Count - 1;
             if (IsConnOpen())
             {
                 OpenConnection();
@@ -211,16 +213,25 @@ namespace Scheduling_Logic.Model.Database
 
             // Validate for nulls. (params)
             ValidateForNullParamater(dataSet, nameof(dataSet));
-            ValidateForNullParamater(tableName, nameof(tableName));
 
-            DbCommandBuilder sqlCommandBuilder = this.dbProviderFactory.CreateCommandBuilder()!;
+            DbCommandBuilder sqlCommandBuilder = this.dbProviderFactory!.CreateCommandBuilder()!;
+
             // Validate for nulls. (local variable)
             ValidateForNullClassVariable(sqlCommandBuilder, nameof(sqlCommandBuilder));
 
-            // Process
-            sqlCommandBuilder.GetInsertCommand();
+            this.dbDataAdapter.InsertCommand!.CommandText = insertStatement;
 
-            this.dbDataAdapter.Update(dataSet, tableName);
+            // Clear all parameters before adding new ones
+            this.dbDataAdapter.InsertCommand.Parameters.Clear();
+            for (int columnIdx = 0; columnIdx < columnNames.Length; ++columnIdx)
+            {
+                this.dbDataAdapter.InsertCommand!.Parameters.Add(new MySqlParameter(columnNames[columnIdx], dataSet.Tables[tableName]!.Rows[lastRow][columnNames[columnIdx]]));
+            }
+
+            sqlCommandBuilder.DataAdapter = this.dbDataAdapter;
+            sqlCommandBuilder.GetInsertCommand(true);
+
+            return this.dbDataAdapter.Update(dataSet, tableName);
         }
 
         private void ValidateForNullParamater(object? param, string paramName, [CallerMemberName] string callerName = "")
@@ -250,30 +261,21 @@ namespace Scheduling_Logic.Model.Database
         private void ConfigureInteralDbDataAdapter()
         {
             this.dbDataAdapter.SelectCommand = this.dbProviderFactory.CreateCommand(); // can throw dbexception
+            this.dbDataAdapter.UpdateCommand = this.dbProviderFactory.CreateCommand(); // can throw dbexception
+            this.dbDataAdapter.InsertCommand = this.dbProviderFactory.CreateCommand(); // can throw dbexception
+            this.dbDataAdapter.DeleteCommand = this.dbProviderFactory.CreateCommand(); // can throw dbexception
 
             // Validate for nulls. (class member property)
             ValidateForNullClassVariable(this.dbDataAdapter.SelectCommand, nameof(this.dbDataAdapter.SelectCommand));
+            ValidateForNullClassVariable(this.dbDataAdapter.UpdateCommand, nameof(this.dbDataAdapter.UpdateCommand));
+            ValidateForNullClassVariable(this.dbDataAdapter.InsertCommand, nameof(this.dbDataAdapter.InsertCommand));
+            ValidateForNullClassVariable(this.dbDataAdapter.DeleteCommand, nameof(this.dbDataAdapter.DeleteCommand));
 
             this.dbDataAdapter.SelectCommand!.Connection = this.dbConnection;    // can throw null reference exception
+            this.dbDataAdapter.UpdateCommand!.Connection = this.dbConnection;    // can throw null reference exception
+            this.dbDataAdapter.InsertCommand!.Connection = this.dbConnection;    // can throw null reference exception
+            this.dbDataAdapter.DeleteCommand!.Connection = this.dbConnection;    // can throw null reference exception
         }
-
-        /*        public void Update()
-                {
-                    dbDataAdapter.SelectCommand.CommandText = $"SELECT * FROM `{this.dbSchema.DbName}`.`{tableName}`;";
-
-                    var mySqlCommand = new MySqlCommand();
-                    mySqlCommand.Connection = (MySqlConnection)((DbConnector<T>)this.dbConnector).dbConnection;
-
-                    mySqlCommand.CommandText = $"UPDATE `{this.dbSchema.DbName}`.`{tableName}` SET customerName = @custName " + "WHERE customerID = @custID;";
-                    mySqlCommand.Parameters.Add("@custName", MySqlDbType.VarChar);
-                    mySqlCommand.Parameters.Add("@custID", MySqlDbType.Int32);
-
-                    mySqlCommand.Parameters["@custName"].Value = newValue;
-                    mySqlCommand.Parameters["@custID"].Value = 3;
-
-                    ((MySqlDataAdapter)dbDataAdapter).UpdateCommand = mySqlCommand;
-                    Console.WriteLine(((MySqlDataAdapter)dbDataAdapter).Update(this.DataSet, tableName));
-                }*/
 
         /*
          * Description: Disposes different properties and fields of managed and unmanaged data.

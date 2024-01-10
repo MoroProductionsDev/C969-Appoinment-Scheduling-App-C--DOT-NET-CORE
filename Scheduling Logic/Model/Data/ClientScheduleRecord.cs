@@ -14,6 +14,7 @@ namespace Scheduling_Logic.Model.Data
             public Int32 UserId;
             public String UserName = String.Empty;
             public String Password = String.Empty;
+            public Boolean Active;
             public DateTime CreateDate;
             public String CreatedBy = String.Empty;
             public DateTime LastUpdate;

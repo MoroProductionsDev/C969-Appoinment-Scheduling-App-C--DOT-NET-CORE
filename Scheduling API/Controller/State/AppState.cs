@@ -12,21 +12,23 @@ using Scheduling_Logic.Model.Database;
 using Scheduling_Logic.Model.Config;
 using Scheduling_API.Controller.Factory;
 using Scheduling_API.Controller.Validate;
-using Org.BouncyCastle.Asn1.Cms;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Configuration;
+using Scheduling_Logic.Model.NetWork;
 
 namespace Scheduling_API.Controller.State
 {
     public sealed class AppState
     {
         public bool Authenticated { get; private set; }
+        public string Location { get; private set; } = String.Empty;
+        public string TimeZone { get; private set; } = String.Empty;
         public AppData AppData { get; private set; }
-        internal DbSchema DbSchema { get; private set; }
-        internal DbConnector DbConnector { get; private set; }
-        internal DbDataSet DbDataSet { get; private set; }
+        public DbSchema DbSchema { get; private set; }
+        public DbConnector DbConnector { get; private set; }
+        public DbDataSet DbDataSet { get; private set; }
         internal Exception? appException { get; private set; }
-
         internal AppState(IDbConfig? dbConfig, string dbName)
         {
             ValidateForNullParamater(dbConfig, nameof(dbConfig));
@@ -56,6 +58,12 @@ namespace Scheduling_API.Controller.State
         internal void Authenticate()
         {
             Authenticated = Validator.CheckCredentials(this);
+        }
+
+        internal void GetGeoLocationData()
+        {
+            Location = NetworkDataProvider.GetUserLocation();
+            TimeZone = NetworkDataProvider.GetUserTimeZone();
         }
 
         internal void StoredDbException(object sender, EventArgs e)
