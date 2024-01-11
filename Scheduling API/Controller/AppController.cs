@@ -39,7 +39,7 @@ namespace Scheduling_API.Controller
             AppState.StaticValidateAppStateForNull(appState);
 
             // Gather user details and default values
-            appState!.AppData.AddUserValAndDefaultVal(appState);
+            appState!.AppData.AddCustomerValAndDefaultVal(appState);
 
             // -- Country --
             // Prepare data for the Data Set
@@ -88,6 +88,26 @@ namespace Scheduling_API.Controller
                                         insertCustomerSqlStatement,
                                         customerColumnNames,
                                         customersValues);
+        }
+
+        public static void AddAppointmentRecord(AppState? appState)
+        {
+            AppState.StaticValidateAppStateForNull(appState);
+
+            // Gather user details and default values
+            appState!.AppData.AddAppointmentValAndDefaultVal(appState);
+
+            // -- Appointment --
+            // Prepare data for the Data Set
+            string insertAppointmentSqlStatement = appState!.AppData.GetInsertAppointmentSQlStatement(appState);
+            string[] appointmentColumnNames = ((ClientScheduleDbSchema)appState!.DbSchema).GetAppointmentColumnNames();
+            ArrayList appointmentValues = appState!.AppData.GetRecordValuesAsArrayList<ClientScheduleRecord.AppointmentRecord>();
+
+            // Insert in the DataSet in the Database
+            appState!.DbDataSet.Insert(ClientScheduleTableName.Appointment,
+                                        insertAppointmentSqlStatement,
+                                        appointmentColumnNames,
+                                        appointmentValues);
         }
 
         public static void UpdateCustomerRecord(AppState? appState)

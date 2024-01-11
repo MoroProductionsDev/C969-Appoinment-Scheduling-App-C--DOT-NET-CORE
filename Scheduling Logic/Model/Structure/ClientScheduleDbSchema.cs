@@ -195,7 +195,9 @@ namespace Scheduling_Logic.Model.Structure
                 $"{AppointmentColumnName.CustomerId}",
                 $"{AppointmentColumnName.UserID}",
                 $"{AppointmentColumnName.Title}",
+                $"{AppointmentColumnName.Description}",
                 $"{AppointmentColumnName.Location}",
+                $"{AppointmentColumnName.Contact}",
                 $"{AppointmentColumnName.Type}",
                 $"{AppointmentColumnName.Url}",
                 $"{AppointmentColumnName.Start}",
@@ -204,7 +206,7 @@ namespace Scheduling_Logic.Model.Structure
                 $"{AllInCommonColumns.CreatedBy}",
                 $"{AllInCommonColumns.LastUpdate}",
                 $"{AllInCommonColumns.LastUpdateBy}"
-            };  
+            };
         }
     }
 }

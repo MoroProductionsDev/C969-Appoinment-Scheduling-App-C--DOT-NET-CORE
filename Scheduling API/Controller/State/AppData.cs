@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Data;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -50,13 +51,18 @@ namespace Scheduling_API.Controller.State
             this.UserRecord.LastUpdateBy = (string)currentUserDataRow[0][7];
         }
 
-        internal void AddUserValAndDefaultVal(AppState appState)
+        internal void AddCustomerValAndDefaultVal(AppState appState)
         {
             AddCountry(appState);
             AddCity(appState);
             AddCity(appState);
             AddAddress(appState);
             AddCustomer(appState);
+            
+        }
+
+        internal void AddAppointmentValAndDefaultVal(AppState appState)
+        {
             AddAppointment(appState);
         }
 
@@ -407,11 +413,11 @@ namespace Scheduling_API.Controller.State
             this.AppointmentRecord.AppointmentId = newAppointmentId;
             this.AppointmentRecord.CustomerId = this.CustomerRecord.CustomerId;
             this.AppointmentRecord.UserID = this.UserRecord.UserId;
-            this.AppointmentRecord.Title = appState.AppData.AppointmentRecord.Title ?? String.Empty; // user value
+            this.AppointmentRecord.Title = appState.AppData.AppointmentRecord.Title ?? "not needed"; // user value
             this.AppointmentRecord.Description = appState.AppData.AppointmentRecord.Description ?? "not needed"; // user value
-            this.AppointmentRecord.Location = appState.AppData.AppointmentRecord.Location ?? String.Empty; // user value
+            this.AppointmentRecord.Location = appState.AppData.AppointmentRecord.Location ?? "not needed"; // user value
             this.AppointmentRecord.Type = appState.AppData.AppointmentRecord.Type ?? String.Empty; // user value
-            this.AppointmentRecord.Url = appState.AppData.AppointmentRecord.Url ?? String.Empty;  // user value
+            this.AppointmentRecord.Url = appState.AppData.AppointmentRecord.Url ?? "not needed";  // user value
             this.AppointmentRecord.Start = appState.AppData.AppointmentRecord.Start;  // user value
             this.AppointmentRecord.End = appState.AppData.AppointmentRecord.End;  // user value
             this.AppointmentRecord.CreateDate = DateTime.Now;
