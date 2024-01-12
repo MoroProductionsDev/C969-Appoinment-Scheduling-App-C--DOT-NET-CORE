@@ -12,6 +12,7 @@ using Scheduling_Logic.Model.Database;
 using Scheduling_Logic.Model.Config;
 using Scheduling_API.Controller.Factory;
 using Scheduling_API.Controller.Validate;
+using Scheduling_API.Controller.Process;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,8 @@ namespace Scheduling_API.Controller.State
 {
     public sealed class AppState
     {
+        private readonly AuthenticationLogger authLogger;
+
         public bool Authenticated { get; private set; }
         public string Location { get; private set; } = String.Empty;
         public string TimeZone { get; private set; } = String.Empty;
@@ -28,7 +31,8 @@ namespace Scheduling_API.Controller.State
         public DbSchema DbSchema { get; private set; }
         public DbConnector DbConnector { get; private set; }
         public DbDataSet DbDataSet { get; private set; }
-        internal Exception? appException { get; private set; }
+        internal Exception? AppException { get; private set; }
+
         internal AppState(IDbConfig? dbConfig, string dbName)
         {
             ValidateForNullParamater(dbConfig, nameof(dbConfig));
@@ -45,6 +49,8 @@ namespace Scheduling_API.Controller.State
 
             this.DbDataSet = AppFactory.BuildDatabaseDataSet(this)!;
             ValidateForNullClassVariable(this.DbDataSet, nameof(this.DbDataSet));
+
+            authLogger = new AuthenticationLogger();
         }
 
         public static void StaticValidateAppStateForNull(AppState? controlAppState, [CallerMemberName] string callerName = "")
@@ -58,6 +64,11 @@ namespace Scheduling_API.Controller.State
         internal void Authenticate()
         {
             Authenticated = Validator.CheckCredentials(this);
+
+            if (Authenticated)
+            {
+                authLogger.WriteLog(this);
+            }
         }
 
         internal void GetGeoLocationData()
@@ -68,9 +79,9 @@ namespace Scheduling_API.Controller.State
 
         internal void StoredDbException(object sender, EventArgs e)
         {
-            if (appException == null)
+            if (AppException == null)
             {
-                this.appException = sender as Exception;
+                this.AppException = sender as Exception;
             }
         }
 

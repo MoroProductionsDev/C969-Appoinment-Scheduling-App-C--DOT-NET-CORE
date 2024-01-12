@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Scheduling_API.Controller.State;
 using Scheduling_Logic.Model.Data;
+using static Scheduling_API.Controller.State.AppData;
 using static Scheduling_Logic.Model.Structure.ClientScheduleDbSchema;
 
 namespace Scheduling_API.Controller.Validate
@@ -34,7 +35,8 @@ namespace Scheduling_API.Controller.Validate
             if (userDataRow.ToList().Count == 1)
             {
                 // fetch the user's data to the application
-                appState.AppData.AddUser(userDataRow.ToImmutableArray<DataRow>());
+                appState.AppData.AddUser(userDataRow.ToImmutableArray<DataRow>()); // mutation of the UserRecord
+
                 return true;
             }  
             else

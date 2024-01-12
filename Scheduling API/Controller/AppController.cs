@@ -112,10 +112,14 @@ namespace Scheduling_API.Controller
 
         public static void UpdateCustomerRecord(AppState? appState)
         {
+            AppState.StaticValidateAppStateForNull(appState);
+
             appState?.DbDataSet.Update<string>(ClientScheduleDbSchema._dbName,  ClientScheduleTableName.Customer, CustomerColumnName.CustomerName, "Ina Prufung", "Moro Men");
         }
 
         public static void DeleteCustomerRecord(AppState? appState) {
+            AppState.StaticValidateAppStateForNull(appState);
+
             appState?.DbDataSet.Delete<string>(ClientScheduleTableName.Customer, CustomerColumnName.CustomerName, "Moro Men");
         }
     }

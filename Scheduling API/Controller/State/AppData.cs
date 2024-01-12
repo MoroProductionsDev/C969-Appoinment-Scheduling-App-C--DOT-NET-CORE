@@ -28,7 +28,6 @@ namespace Scheduling_API.Controller.State
         public AddressRecord AddressRecord { get; private set; }
         public CityRecord CityRecord { get; private set; }
         public CountryRecord CountryRecord { get; private set; }
-
         public AppData()
         {
             this.UserRecord = new UserRecord();
@@ -44,7 +43,7 @@ namespace Scheduling_API.Controller.State
             this.UserRecord.UserId = (int)currentUserDataRow[0][0];
             this.UserRecord.UserName = (string)currentUserDataRow[0][1];
             // Skip the password, no need to store it.
-            this.UserRecord.Active = (bool)currentUserDataRow[0][3];
+            this.UserRecord.Active = (sbyte)currentUserDataRow[0][3];
             this.UserRecord.CreateDate = (DateTime)currentUserDataRow[0][4];
             this.UserRecord.CreatedBy = (string)currentUserDataRow[0][5];
             this.UserRecord.LastUpdate = (DateTime)currentUserDataRow[0][6];
