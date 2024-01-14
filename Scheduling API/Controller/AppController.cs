@@ -10,6 +10,7 @@ using Scheduling_API.Controller.State;
 using Scheduling_Logic.Model.Structure;
 using Scheduling_Logic.Model.Data;
 using static Scheduling_Logic.Model.Structure.ClientScheduleDbSchema;
+using Scheduling_API.Controller.Process;
 
 namespace Scheduling_API.Controller
 {
@@ -121,6 +122,13 @@ namespace Scheduling_API.Controller
             AppState.StaticValidateAppStateForNull(appState);
 
             appState?.DbDataSet.Delete<string>(ClientScheduleTableName.Customer, CustomerColumnName.CustomerName, "Moro Men");
+        }
+
+        public static void GenerateReport(AppState? appState)
+        {
+            AppState.StaticValidateAppStateForNull(appState);
+
+            appState?.Report.Generate(Report.Type.LocationSchedule);
         }
     }
 }

@@ -32,6 +32,7 @@ namespace Scheduling_API.Controller.State
         public DbConnector DbConnector { get; private set; }
         public DbDataSet DbDataSet { get; private set; }
         internal Exception? AppException { get; private set; }
+        public Report Report { get; private set; }
 
         internal AppState(IDbConfig? dbConfig, string dbName)
         {
@@ -51,6 +52,7 @@ namespace Scheduling_API.Controller.State
             ValidateForNullClassVariable(this.DbDataSet, nameof(this.DbDataSet));
 
             authLogger = new AuthenticationLogger();
+            Report = new Report(this.DbDataSet.DataSet);
         }
 
         public static void StaticValidateAppStateForNull(AppState? controlAppState, [CallerMemberName] string callerName = "")

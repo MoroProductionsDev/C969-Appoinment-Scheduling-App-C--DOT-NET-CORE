@@ -33,7 +33,7 @@ namespace Scheduling_Logic.Model.Structure
         private static readonly Dictionary<string, string[]> _foreignKeys = new Dictionary<string, string[]>()
         {
             {ClientScheduleTableName.User, new[]{ string.Empty} },
-            {ClientScheduleTableName.Appointment, new []{ AppointmentColumnName.CustomerId, AppointmentColumnName .UserID} },
+            {ClientScheduleTableName.Appointment, new []{ AppointmentColumnName.CustomerId, AppointmentColumnName .UserId} },
             {ClientScheduleTableName.Customer, new[] {CustomerColumnName.AddressId} },
             {ClientScheduleTableName.Address, new[] {AddressColumnName.CityId} },
             {ClientScheduleTableName.City, new[] {CityColumnName.CountryId} },
@@ -78,7 +78,7 @@ namespace Scheduling_Logic.Model.Structure
         {
             public const string AppointmentId = "appointmentId";
             public const string CustomerId = "customerId";
-            public const string UserID = "userId";
+            public const string UserId = "userId";
             public const string Title = "title";
             public const string Description = "description";
             public const string Location = "location";
@@ -193,7 +193,7 @@ namespace Scheduling_Logic.Model.Structure
             {
                 $"{AppointmentColumnName.AppointmentId}",
                 $"{AppointmentColumnName.CustomerId}",
-                $"{AppointmentColumnName.UserID}",
+                $"{AppointmentColumnName.UserId}",
                 $"{AppointmentColumnName.Title}",
                 $"{AppointmentColumnName.Description}",
                 $"{AppointmentColumnName.Location}",
