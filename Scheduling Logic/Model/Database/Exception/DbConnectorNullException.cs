@@ -8,8 +8,6 @@ namespace Scheduling_Logic.Model.Database
 {
     internal class DbConnectorNullException : Exception
     {
-        internal DbConnectorNullException() { }
-
         internal DbConnectorNullException(string message)
             : base(message) { }
 
