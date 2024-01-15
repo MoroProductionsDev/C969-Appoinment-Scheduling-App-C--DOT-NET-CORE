@@ -23,7 +23,6 @@ namespace Scheduling_API.Controller.State
     public sealed class AppState
     {
         private readonly AuthenticationLogger authLogger;
-
         public bool Authenticated { get; private set; }
         public string Location { get; private set; } = String.Empty;
         public string TimeZone { get; private set; } = String.Empty;
@@ -70,7 +69,14 @@ namespace Scheduling_API.Controller.State
             if (Authenticated)
             {
                 authLogger.WriteLog(this);
+                AppointmentReminder.AlertUserMin(this);
             }
+        }
+
+        internal void ValidateAppointment()
+        {
+            Validator.CheckTimeIsOnBusinnesHours(this.AppData.AppointmentRecord);
+            // Validator.CheckForOverlappingAppointment(this, this.AppData.AppointmentRecord);
         }
 
         internal void GetGeoLocationData()

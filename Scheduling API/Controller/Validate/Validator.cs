@@ -8,8 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Scheduling_API.Controller.State;
 using Scheduling_Logic.Model.Data;
-using static Scheduling_API.Controller.State.AppData;
 using static Scheduling_Logic.Model.Structure.ClientScheduleDbSchema;
+using static Scheduling_Logic.Model.Data.ClientScheduleRecord;
 
 namespace Scheduling_API.Controller.Validate
 {
@@ -45,8 +45,39 @@ namespace Scheduling_API.Controller.Validate
             }
         }
 
-        internal static bool CheckTimeIsOnBusinnesHours(AppState appState)
+        internal static bool CheckTimeIsOnBusinnesHours(AppointmentRecord appointmentRecord)
         {
+            DateTime newAppointmentStartDateTime = appointmentRecord.Start;
+            DateTime newAppointmentEndDateTime = appointmentRecord.End;
+
+            if (newAppointmentStartDateTime.Hour < AppData.BusinessOpeningHour || newAppointmentStartDateTime.Hour >= AppData.BusinessClosingHour
+                && newAppointmentEndDateTime.Hour < AppData.BusinessOpeningHour || newAppointmentEndDateTime.Hour >= AppData.BusinessClosingHour)
+            {
+                return false;
+            } else
+            {
+                return true;
+            }
+        }
+
+        internal static bool CheckForOverlappingAppointment(AppState appState, AppointmentRecord appointmentRecord)
+        {
+            DateTime newAppointmentStartDateTime = appointmentRecord.Start;
+            DateTime newAppointmentEndDateTime = appointmentRecord.End;
+
+            DataTable appointmentTable = appState.DbDataSet.DataSet.Tables[ClientScheduleTableName.Appointment]!;
+
+            foreach (DataRow row in appointmentTable.Rows)
+            {
+                if (newAppointmentStartDateTime >= (DateTime) row[AppointmentColumnName.Start] &&
+                    newAppointmentStartDateTime <= (DateTime) row[AppointmentColumnName.End] ||
+                    newAppointmentEndDateTime >= (DateTime)row[AppointmentColumnName.Start] &&
+                    newAppointmentEndDateTime <= (DateTime)row[AppointmentColumnName.End])
+                {
+                    return true;
+                }
+            }
+
             return false;
         }
     }

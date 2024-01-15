@@ -22,6 +22,8 @@ namespace Scheduling_API.Controller.State
     {
         const char ParameterSymbol = '@';
         const int firstIdIndex = 1;
+        public const int BusinessOpeningHour = 8;  // 8 AM
+        public const int BusinessClosingHour = 17; // 5 PM
         public UserRecord UserRecord { get; private set; }
         public AppointmentRecord AppointmentRecord { get; private set; }
         public CustomerRecord CustomerRecord { get; private set; }

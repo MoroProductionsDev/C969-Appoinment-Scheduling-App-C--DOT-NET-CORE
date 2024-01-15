@@ -11,6 +11,7 @@ using Scheduling_Logic.Model.Structure;
 using Scheduling_Logic.Model.Data;
 using static Scheduling_Logic.Model.Structure.ClientScheduleDbSchema;
 using Scheduling_API.Controller.Process;
+using System.ComponentModel.DataAnnotations;
 
 namespace Scheduling_API.Controller
 {
@@ -95,8 +96,11 @@ namespace Scheduling_API.Controller
         {
             AppState.StaticValidateAppStateForNull(appState);
 
+
             // Gather user details and default values
             appState!.AppData.AddAppointmentValAndDefaultVal(appState);
+
+            appState!.ValidateAppointment();
 
             // -- Appointment --
             // Prepare data for the Data Set
@@ -106,9 +110,10 @@ namespace Scheduling_API.Controller
 
             // Insert in the DataSet in the Database
             appState!.DbDataSet.Insert(ClientScheduleTableName.Appointment,
-                                        insertAppointmentSqlStatement,
-                                        appointmentColumnNames,
-                                        appointmentValues);
+                                       insertAppointmentSqlStatement,
+                                       appointmentColumnNames,
+                                       appointmentValues);
+
         }
 
         public static void UpdateCustomerRecord(AppState? appState)
