@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Scheduling_Logic.Model.Structure;
-using Scheduling_Logic.Model.Factory;
-using Scheduling_Logic.Model.Data;
+﻿using Scheduling_API.Controller.State;
 using Scheduling_Logic.Model.Config;
+using Scheduling_Logic.Model.Data;
 using Scheduling_Logic.Model.Database;
-using Scheduling_API.Controller.State;
+using Scheduling_Logic.Model.Factory;
+using Scheduling_Logic.Model.Structure;
 
 namespace Scheduling_API.Controller.Factory
 {
+    // Factory class for the app's API (MVC) model.
     public static class AppFactory
     {
         public static AppState BuildAppState(IDbConfig? dbConfig, string dbName)
@@ -61,7 +55,8 @@ namespace Scheduling_API.Controller.Factory
             return dbSchema;
         }
 
-        internal static AppData? BuildAppData(string dbName) {
+        internal static AppData? BuildAppData(string dbName)
+        {
             AppData? appData = null;
 
             switch (dbName)
@@ -70,8 +65,22 @@ namespace Scheduling_API.Controller.Factory
                     appData = new AppData();
                     break;
             }
-            
+
             return appData;
+        }
+
+        internal static AppDataView? BuildAppDataView(AppState appState, string dbName)
+        {
+            AppDataView? appDataView = null;
+
+            switch (dbName)
+            {
+                case AppInfo.ClientScheduleDbName:
+                    appDataView = new AppDataView(appState);
+                    break;
+            }
+
+            return appDataView;
         }
 
         internal static DbConnector? BuildDatabaseConnector(IDbConfig dbConfig)

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Scheduling_Logic.Model.Structure
+﻿namespace Scheduling_Logic.Model.Structure
 {
-    public abstract class DbSchema 
+    // Abstract class use the basic require information fro the database schema.
+    public abstract class DbSchema
     {
         public abstract string DbName { get; }
         public abstract Dictionary<int, string> TableNamesIndented { get; }

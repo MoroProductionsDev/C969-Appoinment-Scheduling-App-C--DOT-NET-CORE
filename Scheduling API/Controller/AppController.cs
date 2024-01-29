@@ -1,26 +1,26 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Scheduling_API.Controller.Process;
 using Scheduling_API.Controller.State;
-using Scheduling_Logic.Model.Structure;
 using Scheduling_Logic.Model.Data;
-using static Scheduling_Logic.Model.Structure.ClientScheduleDbSchema;
-using Scheduling_API.Controller.Process;
-using System.ComponentModel.DataAnnotations;
+using Scheduling_Logic.Model.Structure;
+using System.Collections;
 
 namespace Scheduling_API.Controller
 {
+    // It redirects the flow of the application.
+    // It should be called from the application's view and it takes the control
+    // pass it down the AppState for specic models processing.
     public static class AppController
     {
         public static void AuthenticateLogIn(AppState? appState)
         {
             AppState.StaticValidateAppStateForNull(appState);
             appState?.Authenticate();
+        }
+
+        public static void UnAutenticate(AppState? appState)
+        {
+            AppState.StaticValidateAppStateForNull(appState);
+            appState?.UnAuthenticate();
         }
 
         public static void MapDataBaseToDataSet(AppState? appState)
@@ -36,6 +36,13 @@ namespace Scheduling_API.Controller
             appState!.GetGeoLocationData();
         }
 
+        public static void GetRecordID<T>(AppState? appState, FetchIdDbMetaData<T> fetchIdDbMetaData)
+        {
+            AppState.StaticValidateAppStateForNull(appState);
+
+            appState!.StoredFetchedId(appState!.DbDataSet.GetRowId(fetchIdDbMetaData));
+        }
+
         public static void AddCustomerRecord(AppState? appState)
         {
             AppState.StaticValidateAppStateForNull(appState);
@@ -45,50 +52,50 @@ namespace Scheduling_API.Controller
 
             // -- Country --
             // Prepare data for the Data Set
-            string insertCountrySqlStatement = appState!.AppData.GetInsertCountrySQlStatement(appState);
-            string[] countryColumnNames = ((ClientScheduleDbSchema) appState!.DbSchema).GetCountryColumnNames();
-            ArrayList countryValues = appState!.AppData.GetRecordValuesAsArrayList<ClientScheduleRecord.CountryRecord>();
+            string insertCountrySqlStatement = AppData.GetInsertCountrySQlStatement();
+            string[] countryColumnNames = ClientScheduleDbSchema.GetCountryColumnNames();
+            ArrayList countryValues = appState!.AppData.GetRecordValuesAsArrayList<ClientScheduleData.CountryRecord>();
 
             // Insert in the DataSet in the Database
-            appState!.DbDataSet.Insert(ClientScheduleTableName.Country,
-                                        insertCountrySqlStatement,
+            appState!.DbDataSet.Insert(ClientScheduleDbSchema.TableName.Country,
                                         countryColumnNames,
+                                        insertCountrySqlStatement,
                                         countryValues);
 
             // -- City --
             // Prepare data for the Data Set
-            string insertCitySqlStatement = appState!.AppData.GetInsertCitySQlStatement(appState);
-            string[] cityColumnNames = ((ClientScheduleDbSchema)appState!.DbSchema).GetCityColumnNames();
-            ArrayList cityValues = appState!.AppData.GetRecordValuesAsArrayList<ClientScheduleRecord.CityRecord>();
+            string insertCitySqlStatement = AppData.GetInsertCitySQlStatement();
+            string[] cityColumnNames = ClientScheduleDbSchema.GetCityColumnNames();
+            ArrayList cityValues = appState!.AppData.GetRecordValuesAsArrayList<ClientScheduleData.CityRecord>();
 
             // Insert in the DataSet in the Database
-            appState!.DbDataSet.Insert(ClientScheduleTableName.City,
-                                        insertCitySqlStatement,
+            appState!.DbDataSet.Insert(ClientScheduleDbSchema.TableName.City,
                                         cityColumnNames,
+                                        insertCitySqlStatement,
                                         cityValues);
 
             // -- Address --
             // Prepare data for the Data Set
-            string insertAddressSqlStatement = appState!.AppData.GetInsertAddressSQlStatement(appState);
-            string[] addressColumnNames = ((ClientScheduleDbSchema)appState!.DbSchema).GetAddressColumnNames();
-            ArrayList addressValues = appState!.AppData.GetRecordValuesAsArrayList<ClientScheduleRecord.AddressRecord>();
+            string insertAddressSqlStatement = AppData.GetInsertAddressSQlStatement();
+            string[] addressColumnNames = ClientScheduleDbSchema.GetAddressColumnNames();
+            ArrayList addressValues = appState!.AppData.GetRecordValuesAsArrayList<ClientScheduleData.AddressRecord>();
 
             // Insert in the DataSet in the Database
-            appState!.DbDataSet.Insert(ClientScheduleTableName.Address,
-                                        insertAddressSqlStatement,
+            appState!.DbDataSet.Insert(ClientScheduleDbSchema.TableName.Address,
                                         addressColumnNames,
+                                        insertAddressSqlStatement,
                                         addressValues);
 
             // -- Customer --
             // Prepare data for the Data Set
-            string insertCustomerSqlStatement = appState!.AppData.GetInsertCustomerSQlStatement(appState);
-            string[] customerColumnNames = ((ClientScheduleDbSchema)appState!.DbSchema).GetCustomerColumnNames();
-            ArrayList customersValues = appState!.AppData.GetRecordValuesAsArrayList<ClientScheduleRecord.CustomerRecord>();
+            string insertCustomerSqlStatement = AppData.GetInsertCustomerSQlStatement();
+            string[] customerColumnNames = ClientScheduleDbSchema.GetCustomerColumnNames();
+            ArrayList customersValues = appState!.AppData.GetRecordValuesAsArrayList<ClientScheduleData.CustomerRecord>();
 
             // Insert in the DataSet in the Database
-            appState!.DbDataSet.Insert(ClientScheduleTableName.Customer,
-                                        insertCustomerSqlStatement,
+            appState!.DbDataSet.Insert(ClientScheduleDbSchema.TableName.Customer,
                                         customerColumnNames,
+                                        insertCustomerSqlStatement,
                                         customersValues);
         }
 
@@ -104,36 +111,43 @@ namespace Scheduling_API.Controller
 
             // -- Appointment --
             // Prepare data for the Data Set
-            string insertAppointmentSqlStatement = appState!.AppData.GetInsertAppointmentSQlStatement(appState);
-            string[] appointmentColumnNames = ((ClientScheduleDbSchema)appState!.DbSchema).GetAppointmentColumnNames();
-            ArrayList appointmentValues = appState!.AppData.GetRecordValuesAsArrayList<ClientScheduleRecord.AppointmentRecord>();
+            string insertAppointmentSqlStatement = AppData.GetInsertAppointmentSQlStatement();
+            string[] appointmentColumnNames = ClientScheduleDbSchema.GetAppointmentColumnNames();
+            ArrayList appointmentValues = appState!.AppData.GetRecordValuesAsArrayList<ClientScheduleData.AppointmentRecord>();
 
             // Insert in the DataSet in the Database
-            appState!.DbDataSet.Insert(ClientScheduleTableName.Appointment,
-                                       insertAppointmentSqlStatement,
+            appState!.DbDataSet.Insert(ClientScheduleDbSchema.TableName.Appointment,
                                        appointmentColumnNames,
+                                       insertAppointmentSqlStatement,
                                        appointmentValues);
 
         }
 
-        public static void UpdateCustomerRecord(AppState? appState)
+        public static void UpdateRecord<T>(AppState? appState, UpdateDbMetaData<T> updateMetaData)
         {
             AppState.StaticValidateAppStateForNull(appState);
 
-            appState?.DbDataSet.Update<string>(ClientScheduleDbSchema._dbName,  ClientScheduleTableName.Customer, CustomerColumnName.CustomerName, "Ina Prufung", "Moro Men");
+            // -- Customer --
+            // Prepare data for the Data Set
+            string updateSqlStatement = AppData.GetUpdateSQLStatement(updateMetaData);
+            appState?.DbDataSet.Update(updateMetaData, updateSqlStatement);
         }
 
-        public static void DeleteCustomerRecord(AppState? appState) {
-            AppState.StaticValidateAppStateForNull(appState);
-
-            appState?.DbDataSet.Delete<string>(ClientScheduleTableName.Customer, CustomerColumnName.CustomerName, "Moro Men");
-        }
-
-        public static void GenerateReport(AppState? appState)
+        public static void DeleteRecord(AppState? appState, DeleteDbMetaData deleteDatabaseMetaData)
         {
             AppState.StaticValidateAppStateForNull(appState);
 
-            appState?.Report.Generate(Report.Type.LocationSchedule);
+            string deleteAppointmentSqlStatement = AppData.GetDeleteSQLStatement(deleteDatabaseMetaData);
+
+            appState?.DbDataSet.Delete(deleteDatabaseMetaData,
+                                        deleteAppointmentSqlStatement);
+        }
+
+        public static void GenerateReport(AppState? appState, Report.Type reportType)
+        {
+            AppState.StaticValidateAppStateForNull(appState);
+
+            appState?.Report.Generate(reportType);
         }
     }
 }

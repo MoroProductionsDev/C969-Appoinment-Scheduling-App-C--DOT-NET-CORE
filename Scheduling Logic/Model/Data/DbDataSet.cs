@@ -1,5 +1,4 @@
-﻿using MySql.Data.MySqlClient;
-using Scheduling_Logic.Model.Database;
+﻿using Scheduling_Logic.Model.Database;
 using Scheduling_Logic.Model.Factory;
 using Scheduling_Logic.Model.Structure;
 using System.Collections;
@@ -43,13 +42,11 @@ namespace Scheduling_Logic.Model.Data
 
             this.dbConnector = dbConnector!;
             this.dbSchema = dbSchema!;
-            this.DataSet = DataInstance.createDataSet(dbSchema!.DbName);
-            this.Mapped= false;
+            this.DataSet = DataInstance.CreateDataSet(dbSchema!.DbName);
+            this.Mapped = false;
         }
 
-        /*
-        * 
-       */
+        // It maps the content of one specific database with the dataset store on this class
         public void Mapping()
         {
             if (this.Mapped)
@@ -77,51 +74,98 @@ namespace Scheduling_Logic.Model.Data
 
                 DataColumn pkColumn = this.DataSet.Tables[tableName]!.PrimaryKey[0];
                 ChangePKAttributes(pkColumn, tableName);
-                CreatePrimaryAndForeingKeyRelation(tableName);;
+                CreatePrimaryAndForeingKeyRelation(tableName);
+                ;
             }
 
             this.DataSet.AcceptChanges();
             Mapped = true;
         }
 
-        public void Update<T>(string dbName, string tableName, string ColumnName, T currentValue, T newValue)
+        // It search for items and returns the query if found
+        public object Search<T>(SearchRecordsDbMetaData<T> searchDbMetaData)
         {
             ValidateIfDataIsMapped();
 
-            IQueryable<DataRow> query = (from row in this.DataSet.Tables[tableName]!.AsEnumerable()
-                                         where EqualityComparer<T>.Default.Equals(row.Field<T>(ColumnName), currentValue)
+            IQueryable<DataRow> query = (from row in this.DataSet.Tables[searchDbMetaData.TableName]!.AsEnumerable()
+                                         where EqualityComparer<T>.Default
+                                                .Equals(row.Field<T>(searchDbMetaData.ValueColumnName), searchDbMetaData.CurrentValue)
+                                         select row).AsQueryable();
+            return query;
+        }
+
+        // It finds the table id base on the user provided data of that table record
+        public int GetRowId<T>(FetchIdDbMetaData<T> fetchIdDbMetaData)
+        {
+            ValidateIfDataIsMapped();
+
+            IQueryable<DataRow> query = (from row in this.DataSet.Tables[fetchIdDbMetaData.TableName]!.AsEnumerable()
+                                         where EqualityComparer<T>.Default
+                                         .Equals(row.Field<T>(fetchIdDbMetaData.ValueColumnName), fetchIdDbMetaData.CurrentValue)
                                          select row).AsQueryable();
 
-            if (query.Count() > 0)
-            {
-                query.First()[ColumnName] = newValue;
+            return (int)query.First()[fetchIdDbMetaData.IdColumnName];
+        }
 
-                this.dbConnector.Update(this.DataSet, dbName, tableName);
-                this.DataSet.Tables[tableName]!.AcceptChanges();
+        // It updates the record from the data table and database based on the user's input
+        public void Update<T>(UpdateDbMetaData<T> updateDatabaseMetaData, string updateStatement)
+        {
+            ValidateIfDataIsMapped();
+
+            IQueryable<DataRow>? query;
+
+            if (typeof(T).Equals(typeof(DateTime)))
+            {
+                query = (from row in this.DataSet.Tables[updateDatabaseMetaData.TableName]!.AsEnumerable()
+                         where row.Field<DateTime>(updateDatabaseMetaData.ValueColumnName)!.CompareTo(updateDatabaseMetaData.CurrentValue) == 0
+                         select row).AsQueryable();
+
+            }
+            else
+            {
+                query = (from row in this.DataSet.Tables[updateDatabaseMetaData.TableName]!.AsEnumerable()
+                         where row.Field<T>(updateDatabaseMetaData.ValueColumnName)!.Equals(updateDatabaseMetaData.CurrentValue)
+                         select row).AsQueryable();
+            }
+
+            if (query.Any())
+            {
+                if (typeof(T).Equals(typeof(DateTime)))
+                {
+                    DateTime newTime = (DateTime)Convert.ChangeType(updateDatabaseMetaData.NewValue, typeof(DateTime))!;
+
+                    query.First()[updateDatabaseMetaData.ValueColumnName] = newTime.ToUniversalTime();
+                }
+                else
+                {
+                    query.First()[updateDatabaseMetaData.ValueColumnName] = updateDatabaseMetaData.NewValue;
+                }
+
+                this.dbConnector.Update(this.DataSet, updateDatabaseMetaData, updateStatement);
+                this.DataSet.Tables[updateDatabaseMetaData.TableName]!.AcceptChanges();
             }
         }
 
-        public void Delete<T>(string tableName, string ColumnName, T currentValue)
+        // It deletes the record from the data table and database based on the user's input
+        public void Delete(DeleteDbMetaData deleteDatabaseMetaData, string deleteStatement)
         {
             ValidateIfDataIsMapped();
 
-            IQueryable<DataRow> query = (from row in this.DataSet.Tables[tableName]!.AsEnumerable()
-                                         where EqualityComparer<T>.Default.Equals(row.Field<T>(ColumnName), currentValue)
+            IQueryable<DataRow> query = (from row in this.DataSet.Tables[deleteDatabaseMetaData.TableName]!.AsEnumerable()
+                                         where row.Field<int>(deleteDatabaseMetaData.IdColumnName).Equals(deleteDatabaseMetaData.IdValue)
                                          select row).AsQueryable();
 
-            if (query.Count() > 0)
+            if (query.Any())
             {
                 query.First().Delete();
-                this.DataSet.Tables[tableName]!.AcceptChanges();
 
-                //SqlCommandBuilder builder = new SqlCommandBuilder(dbDataAdapter);
-                //adapter.UpdateCommand = builder.GetUpdateCommand();
-                //dbDataAdapter.Update(this.DataSet);
-                this.DataSet.AcceptChanges();
+                this.dbConnector.Delete(this.DataSet, deleteDatabaseMetaData.TableName, deleteStatement);
+                this.DataSet.Tables[deleteDatabaseMetaData.TableName]!.AcceptChanges();
             }
         }
 
-        public void Insert(string tableName, string insertStatement, string[] columnNames, ArrayList columnValues)
+        // It inserts the record to the data table and database based on the user's input
+        public void Insert(string tableName, string[] columnNames, string insertStatement, ArrayList columnValues)
         {
             ValidateIfDataIsMapped();
 
@@ -129,30 +173,28 @@ namespace Scheduling_Logic.Model.Data
 
             for (int idx = 0; idx < columnNames.Length; ++idx)
             {
-                newRow[columnNames[idx]] = columnValues[idx];
+                if (columnValues[idx]!.GetType().Equals(typeof(DateTime)))
+                {
+                    newRow[columnNames[idx]] = ((DateTime)columnValues[idx]!).ToUniversalTime();
+                }
+                else
+                {
+                    newRow[columnNames[idx]] = columnValues[idx];
+                }
             }
 
             this.DataSet.Tables[tableName]!.Rows.Add(newRow);
-            this.dbConnector.Insert(this.DataSet, tableName, insertStatement, columnNames, columnValues);
+            this.dbConnector.Insert(this.DataSet, tableName, columnNames, insertStatement);
             this.DataSet.Tables[tableName]!.AcceptChanges();
         }
 
-        private void ValidateForNullParamater(object? param, string paramName, [CallerMemberName] string callerName = "")
+        private static void ValidateForNullParamater(object? param, string paramName, [CallerMemberName] string callerName = "")
         {
             if (param is null)
             {
                 throw new DataClassNullException("<Scheduling_Logic.Model.Data>(DbDataSet)",
                 new ArgumentNullException(nameof(param),
                     $"[{callerName}][{paramName}] cannot be null."));
-            }
-        }
-
-        private void ValidateForNullClassVariable(object? variable, string variableName, [CallerMemberName] string callerName = "")
-        {
-            if (variable is null)
-            {
-                throw new DataClassNullException("<Scheduling_Logic.Model.Data>(DbDataSet)\n" +
-                    $"[{callerName}][{variableName}] cannot be null.");
             }
         }
 
@@ -182,7 +224,7 @@ namespace Scheduling_Logic.Model.Data
             for (var fkIdx = 0; fkIdx < fkKeyCount; ++fkIdx)
             {
                 string pkTableName = this.dbSchema.FKTablesNames[tableName][fkIdx];
-                string fkColumnName = this.dbSchema.ForeignKeysNames[tableName][fkIdx];  
+                string fkColumnName = this.dbSchema.ForeignKeysNames[tableName][fkIdx];
 
                 if (String.Empty != pkTableName)
                 {
@@ -201,7 +243,7 @@ namespace Scheduling_Logic.Model.Data
         {
             int rowCount = this.DataSet.Tables[tableName]!.Rows.Count;
             string keyColumnName = pkColumn.ColumnName;
-            int autoIncrementSeed = (int) this.DataSet.Tables[tableName]!.Rows[rowCount - 1][keyColumnName];
+            int autoIncrementSeed = (int)this.DataSet.Tables[tableName]!.Rows[rowCount - 1][keyColumnName];
 
             pkColumn.AutoIncrementSeed = autoIncrementSeed + 1;
             pkColumn.Unique = true;

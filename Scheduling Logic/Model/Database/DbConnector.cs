@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using MySql.Data.MySqlClient;
+using Scheduling_Logic.Model.Config;
+using Scheduling_Logic.Model.Data;
+using Scheduling_Logic.Model.Factory;
 using System.Data;
 using System.Data.Common;
-using System.Diagnostics.Metrics;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
-using Scheduling_Logic.Model.Config;
-using Scheduling_Logic.Model.Factory;
 
 namespace Scheduling_Logic.Model.Database
 {
@@ -52,11 +45,6 @@ namespace Scheduling_Logic.Model.Database
             // Establish connection and data adapater
             ConfigureInteralConnection(config);
             ConfigureInteralDbDataAdapter();
-        }
-
-        internal ReadOnlySpan<IDbConnection> Connection()
-        {
-            return new ReadOnlySpan<IDbConnection>();
         }
 
         /*
@@ -141,7 +129,7 @@ namespace Scheduling_Logic.Model.Database
             return this.dbDataAdapter.Fill(dataSet, tableName);
         }
 
-        public Task FillSchemaAsync(in IDbDataAdapter dbDataAdapter, in DataSet dataSet)
+        public Task FillSchemaAsync(IDbDataAdapter dbDataAdapter, in DataSet dataSet)
         {
             // Validate Database Conn
             if (!IsConnOpen())
@@ -149,10 +137,10 @@ namespace Scheduling_Logic.Model.Database
                 OpenConnection();
             }
 
-            TaskCompletionSource<DataTable[]> taskCompletionSource = new TaskCompletionSource<DataTable[]>();
+            TaskCompletionSource<DataTable[]> taskCompletionSource = new();
             try
             {
-                DataTable[] result = this.dbDataAdapter.FillSchema(dataSet, SchemaType.Mapped);
+                DataTable[] result = dbDataAdapter.FillSchema(dataSet, SchemaType.Mapped);
                 taskCompletionSource.SetResult(result);
             }
             catch (Exception exception)
@@ -163,14 +151,14 @@ namespace Scheduling_Logic.Model.Database
             return taskCompletionSource.Task;
         }
 
-        public Task FillAsync(in IDbDataAdapter dbDataAdapter, in DataSet dataSet)
+        public Task FillAsync(IDbDataAdapter dbDataAdapter, in DataSet dataSet)
         {
             if (!IsConnOpen())
             {
                 OpenConnection();
             }
 
-            TaskCompletionSource<int> taskCompletionSource = new TaskCompletionSource<int>();
+            TaskCompletionSource<int> taskCompletionSource = new();
             try
             {
                 int result = dbDataAdapter.Fill(dataSet);
@@ -184,7 +172,28 @@ namespace Scheduling_Logic.Model.Database
             return taskCompletionSource.Task;
         }
 
-        public int Update(DataSet dataSet, string dbName, string tableName)
+        public int Delete(DataSet dataSet, string tableName, string deleteStatement)
+        {
+
+            if (IsConnOpen())
+            {
+                OpenConnection();
+            }
+
+            DbCommandBuilder sqlCommandBuilder = this.dbProviderFactory!.CreateCommandBuilder()!;
+
+            // Validate for nulls. (local variable)
+            ValidateForNullClassVariable(sqlCommandBuilder, nameof(sqlCommandBuilder));
+
+            this.dbDataAdapter.DeleteCommand!.CommandText = deleteStatement;
+
+            sqlCommandBuilder.DataAdapter = this.dbDataAdapter;
+            sqlCommandBuilder.GetDeleteCommand();
+
+            return this.dbDataAdapter.Update(dataSet, tableName);
+        }
+
+        public int Update<T>(DataSet dataSet, UpdateDbMetaData<T> updateDatabaseMetaData, string updateStatement)
         {
             if (IsConnOpen())
             {
@@ -196,14 +205,20 @@ namespace Scheduling_Logic.Model.Database
             // Validate for nulls. (local variable)
             ValidateForNullClassVariable(sqlCommandBuilder, nameof(sqlCommandBuilder));
 
-            this.dbDataAdapter.UpdateCommand!.CommandText = $"SELECT * FROM `{dbName}`.`{tableName}`;"; // *
+            this.dbDataAdapter.UpdateCommand!.CommandText = updateStatement;
+
+            // Clear all parameters before adding new ones
+            this.dbDataAdapter.UpdateCommand!.Parameters.Clear();
+            this.dbDataAdapter.UpdateCommand!.Parameters
+                        .Add(new MySqlParameter(updateDatabaseMetaData.ValueColumnName, updateDatabaseMetaData.NewValue));
+
             sqlCommandBuilder.DataAdapter = this.dbDataAdapter;
             sqlCommandBuilder.GetUpdateCommand();
 
-            return this.dbDataAdapter.Update(dataSet, tableName);
+            return this.dbDataAdapter.Update(dataSet, updateDatabaseMetaData.TableName);
         }
 
-        public int Insert(DataSet dataSet, string tableName, string insertStatement, string[] columnNames, ArrayList columnValues)
+        public int Insert(DataSet dataSet, string tableName, string[] columnNames, string insertStatement)
         {
             int lastRow = dataSet.Tables[tableName]!.Rows.Count - 1;
             if (IsConnOpen())
@@ -222,7 +237,7 @@ namespace Scheduling_Logic.Model.Database
             this.dbDataAdapter.InsertCommand!.CommandText = insertStatement;
 
             // Clear all parameters before adding new ones
-            this.dbDataAdapter.InsertCommand.Parameters.Clear();
+            this.dbDataAdapter.InsertCommand!.Parameters.Clear();
             for (int columnIdx = 0; columnIdx < columnNames.Length; ++columnIdx)
             {
                 this.dbDataAdapter.InsertCommand!.Parameters.Add(new MySqlParameter(columnNames[columnIdx], dataSet.Tables[tableName]!.Rows[lastRow][columnNames[columnIdx]]));
@@ -234,7 +249,7 @@ namespace Scheduling_Logic.Model.Database
             return this.dbDataAdapter.Update(dataSet, tableName);
         }
 
-        private void ValidateForNullParamater(object? param, string paramName, [CallerMemberName] string callerName = "")
+        private static void ValidateForNullParamater(object? param, string paramName, [CallerMemberName] string callerName = "")
         {
             if (param is null)
             {
@@ -244,7 +259,7 @@ namespace Scheduling_Logic.Model.Database
             }
         }
 
-        private void ValidateForNullClassVariable(object? variable, string variableName, [CallerMemberName] string callerName = "")
+        private static void ValidateForNullClassVariable(object? variable, string variableName, [CallerMemberName] string callerName = "")
         {
             if (variable is null)
             {
@@ -292,7 +307,7 @@ namespace Scheduling_Logic.Model.Database
                 }
                 this.dbConnection.Dispose();
 
-/*                this.DbCommand = null;*/
+                /*                this.DbCommand = null;*/
                 // TODO: set large fields to null
                 disposedValue = true;
             }
@@ -301,8 +316,8 @@ namespace Scheduling_Logic.Model.Database
         // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
         ~DbConnector()
         {
-               // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-               this.Dispose(disposing: false);
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            this.Dispose(disposing: false);
         }
 
         /*
@@ -312,7 +327,6 @@ namespace Scheduling_Logic.Model.Database
         {
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             this.Dispose(disposing: true);
-            GC.SuppressFinalize(this);
         }
     }
 }

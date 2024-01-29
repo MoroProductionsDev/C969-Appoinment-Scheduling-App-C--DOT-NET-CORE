@@ -1,53 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Scheduling_Logic.Model.Structure
+﻿namespace Scheduling_Logic.Model.Structure
 {
-    public class ClientScheduleDbSchema : DbSchema
+    // Client's schedule database schema (table, columns, primary keys, foreign keys per table)
+    public sealed class ClientScheduleDbSchema : DbSchema
     {
         public const string _dbName = "client_schedule";
 
-        private static readonly Dictionary<int, string> _tableNamesIndented = new Dictionary<int, string>()
+        private static readonly Dictionary<int, string> _tableNamesIndented = new()
         {
-            {0, ClientScheduleTableName.User},
-            {1, ClientScheduleTableName.Appointment},
-            {2, ClientScheduleTableName.Customer},
-            {3, ClientScheduleTableName.Address},
-            {4, ClientScheduleTableName.City},
-            {5, ClientScheduleTableName.Country}
+            {0, TableName.User},
+            {1, TableName.Appointment},
+            {2, TableName.Customer},
+            {3, TableName.Address},
+            {4, TableName.City},
+            {5, TableName.Country}
         };
 
-        private static readonly Dictionary<string, string[]> _primaryKeys = new Dictionary<string, string[]>()
+        private static readonly Dictionary<string, string[]> _primaryKeys = new()
         {
-            {ClientScheduleTableName.User, new[]{UserColumnName.UserId} },
-            {ClientScheduleTableName.Appointment, new[]{AppointmentColumnName.AppointmentId} },
-            {ClientScheduleTableName.Customer, new[] {CustomerColumnName.CustomerId} },
-            {ClientScheduleTableName.Address, new[] {AddressColumnName.AddressId} },
-            {ClientScheduleTableName.City, new[] {CityColumnName.CityId} },
-            {ClientScheduleTableName.Country, new[] {CountryColumnName.CountryId}}
+            {TableName.User, new[]{UserColumnName.UserId} },
+            {TableName.Appointment, new[]{AppointmentColumnName.AppointmentId} },
+            {TableName.Customer, new[] {CustomerColumnName.CustomerId} },
+            {TableName.Address, new[] {AddressColumnName.AddressId} },
+            {TableName.City, new[] {CityColumnName.CityId} },
+            {TableName.Country, new[] {CountryColumnName.CountryId}}
         };
 
-        private static readonly Dictionary<string, string[]> _foreignKeys = new Dictionary<string, string[]>()
+        private static readonly Dictionary<string, string[]> _foreignKeys = new()
         {
-            {ClientScheduleTableName.User, new[]{ string.Empty} },
-            {ClientScheduleTableName.Appointment, new []{ AppointmentColumnName.CustomerId, AppointmentColumnName .UserId} },
-            {ClientScheduleTableName.Customer, new[] {CustomerColumnName.AddressId} },
-            {ClientScheduleTableName.Address, new[] {AddressColumnName.CityId} },
-            {ClientScheduleTableName.City, new[] {CityColumnName.CountryId} },
-            {ClientScheduleTableName.Country, new[] { string.Empty } }
+            {TableName.User, new[]{ string.Empty} },
+            {TableName.Appointment, new []{ AppointmentColumnName.CustomerId, AppointmentColumnName .UserId} },
+            {TableName.Customer, new[] {CustomerColumnName.AddressId} },
+            {TableName.Address, new[] {AddressColumnName.CityId} },
+            {TableName.City, new[] {CityColumnName.CountryId} },
+            {TableName.Country, new[] { string.Empty } }
         };
 
-        private static readonly Dictionary<string, string[]> _fkTablesContraints = new Dictionary<string, string[]>()
+        private static readonly Dictionary<string, string[]> _fkTablesContraints = new()
         {
-            {ClientScheduleTableName.User, new[]{ string.Empty} },
-            {ClientScheduleTableName.Appointment, new []{ClientScheduleTableName.Customer, ClientScheduleTableName.User} },
-            {ClientScheduleTableName.Customer, new[] {ClientScheduleTableName.Address} },
-            {ClientScheduleTableName.Address, new[] {ClientScheduleTableName.City} },
-            {ClientScheduleTableName.City, new[] {ClientScheduleTableName.Country} },
-            {ClientScheduleTableName.Country, new[] {string.Empty } }
+            {TableName.User, new[]{ string.Empty} },
+            {TableName.Appointment, new []{TableName.Customer, TableName.User} },
+            {TableName.Customer, new[] {TableName.Address} },
+            {TableName.Address, new[] {TableName.City} },
+            {TableName.City, new[] {TableName.Country} },
+            {TableName.Country, new[] {string.Empty } }
         };
 
         public override string DbName { get => _dbName; }
@@ -56,7 +51,7 @@ namespace Scheduling_Logic.Model.Structure
         public override Dictionary<string, string[]> ForeignKeysNames { get => _foreignKeys; }
         public override Dictionary<string, string[]> FKTablesNames { get => _fkTablesContraints; }
 
-        public static class ClientScheduleTableName
+        public static class TableName
         {
             public const string User = "user";
             public const string Appointment = "appointment";
@@ -128,7 +123,7 @@ namespace Scheduling_Logic.Model.Structure
             public const string LastUpdateBy = "lastUpdateBy";
         }
 
-        public string[] GetCountryColumnNames()
+        public static string[] GetCountryColumnNames()
         {
             return new[]
             {
@@ -141,7 +136,7 @@ namespace Scheduling_Logic.Model.Structure
             };
         }
 
-        public string[] GetCityColumnNames()
+        public static string[] GetCityColumnNames()
         {
             return new[]
             {
@@ -155,7 +150,7 @@ namespace Scheduling_Logic.Model.Structure
             };
         }
 
-        public string[] GetAddressColumnNames()
+        public static string[] GetAddressColumnNames()
         {
             return new[]
             {
@@ -172,7 +167,7 @@ namespace Scheduling_Logic.Model.Structure
             };
         }
 
-        public string[] GetCustomerColumnNames()
+        public static string[] GetCustomerColumnNames()
         {
             return new[]
             {
@@ -187,7 +182,7 @@ namespace Scheduling_Logic.Model.Structure
             };
         }
 
-        public string[] GetAppointmentColumnNames()
+        public static string[] GetAppointmentColumnNames()
         {
             return new[]
             {

@@ -1,6 +1,3 @@
-using Scheduling_API.Controller.State;
-using Scheduling_UI_App.UI_State;
-
 namespace Scheduling_UI_App
 {
     internal static class Program

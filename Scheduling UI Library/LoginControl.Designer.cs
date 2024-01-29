@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoginControl));
             userNameLbl = new Label();
             userNameTxtBox = new TextBox();
             passwordLbl = new Label();
@@ -40,53 +41,42 @@
             // 
             // userNameLbl
             // 
-            userNameLbl.AutoSize = true;
-            userNameLbl.Location = new Point(156, 38);
-            userNameLbl.MinimumSize = new Size(57, 15);
+            resources.ApplyResources(userNameLbl, "userNameLbl");
             userNameLbl.Name = "userNameLbl";
-            userNameLbl.Size = new Size(57, 15);
-            userNameLbl.TabIndex = 0;
-            userNameLbl.Text = "User";
-            userNameLbl.TextAlign = ContentAlignment.MiddleCenter;
+            userNameToolTip.SetToolTip(userNameLbl, resources.GetString("userNameLbl.ToolTip"));
+            passwordToolTip.SetToolTip(userNameLbl, resources.GetString("userNameLbl.ToolTip1"));
             // 
             // userNameTxtBox
             // 
-            userNameTxtBox.Location = new Point(134, 56);
-            userNameTxtBox.MaxLength = 36;
+            resources.ApplyResources(userNameTxtBox, "userNameTxtBox");
             userNameTxtBox.Name = "userNameTxtBox";
-            userNameTxtBox.Size = new Size(100, 23);
-            userNameTxtBox.TabIndex = 1;
+            userNameToolTip.SetToolTip(userNameTxtBox, resources.GetString("userNameTxtBox.ToolTip"));
+            passwordToolTip.SetToolTip(userNameTxtBox, resources.GetString("userNameTxtBox.ToolTip1"));
             userNameTxtBox.LostFocus += OnTxtBoxLostFocus;
             // 
             // passwordLbl
             // 
-            passwordLbl.AutoSize = true;
-            passwordLbl.Location = new Point(156, 89);
+            resources.ApplyResources(passwordLbl, "passwordLbl");
             passwordLbl.Name = "passwordLbl";
-            passwordLbl.Size = new Size(57, 15);
-            passwordLbl.TabIndex = 2;
-            passwordLbl.Text = "Password";
-            passwordLbl.TextAlign = ContentAlignment.MiddleCenter;
+            userNameToolTip.SetToolTip(passwordLbl, resources.GetString("passwordLbl.ToolTip"));
+            passwordToolTip.SetToolTip(passwordLbl, resources.GetString("passwordLbl.ToolTip1"));
             // 
             // passwordTxtBox
             // 
-            passwordTxtBox.Location = new Point(134, 107);
-            passwordTxtBox.MaxLength = 254;
+            resources.ApplyResources(passwordTxtBox, "passwordTxtBox");
             passwordTxtBox.Name = "passwordTxtBox";
-            passwordTxtBox.PasswordChar = '•';
-            passwordTxtBox.Size = new Size(100, 23);
-            passwordTxtBox.TabIndex = 3;
+            userNameToolTip.SetToolTip(passwordTxtBox, resources.GetString("passwordTxtBox.ToolTip"));
+            passwordToolTip.SetToolTip(passwordTxtBox, resources.GetString("passwordTxtBox.ToolTip1"));
             passwordTxtBox.LostFocus += OnTxtBoxLostFocus;
             // 
             // signInBtn
             // 
-            signInBtn.Location = new Point(154, 141);
+            resources.ApplyResources(signInBtn, "signInBtn");
             signInBtn.Name = "signInBtn";
-            signInBtn.Size = new Size(60, 25);
-            signInBtn.TabIndex = 4;
-            signInBtn.Text = "Sign In";
+            userNameToolTip.SetToolTip(signInBtn, resources.GetString("signInBtn.ToolTip"));
+            passwordToolTip.SetToolTip(signInBtn, resources.GetString("signInBtn.ToolTip1"));
             signInBtn.UseVisualStyleBackColor = true;
-            signInBtn.Click += signInBtn_Click;
+            signInBtn.Click += SignInBtn_Click;
             // 
             // userNameToolTip
             // 
@@ -98,7 +88,7 @@
             // 
             // LoginControl
             // 
-            this.AutoScaleDimensions = new SizeF(7F, 15F);
+            resources.ApplyResources(this, "$this");
             this.AutoScaleMode = AutoScaleMode.Font;
             this.Controls.Add(signInBtn);
             this.Controls.Add(passwordTxtBox);
@@ -106,7 +96,8 @@
             this.Controls.Add(userNameTxtBox);
             this.Controls.Add(userNameLbl);
             this.Name = "LoginControl";
-            this.Size = new Size(382, 215);
+            userNameToolTip.SetToolTip(this, resources.GetString("$this.ToolTip"));
+            passwordToolTip.SetToolTip(this, resources.GetString("$this.ToolTip1"));
             ResumeLayout(false);
             PerformLayout();
         }

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Scheduling_Logic.Model.Config;
+﻿using Scheduling_Logic.Model.Config;
 using Scheduling_Logic.Model.Database;
 
 namespace Scheduling_Logic.Model.Factory
@@ -41,13 +34,13 @@ namespace Scheduling_Logic.Model.Factory
         public static DbConnector? CreateDatabaseConnector(IDbConfig? config)
         {
             DbConnector? dbConnector = null;
-            switch(config?.GetType())
+            switch (config?.GetType())
             {
                 case Type _ when typeof(MySqlConfig) == config.GetType():
-                {
-                    dbConnector = new DbConnector(config);
-                    break;
-                }
+                    {
+                        dbConnector = new DbConnector(config);
+                        break;
+                    }
             }
 
             return dbConnector;

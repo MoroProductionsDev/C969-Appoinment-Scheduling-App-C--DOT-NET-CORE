@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Scheduling_API.Controller.State
+﻿namespace Scheduling_API.Controller.State
 {
+    // User defined excpetion to validate the AppState class on the [Data] folder
     internal class AppStateNullException : Exception
     {
         internal AppStateNullException() { }

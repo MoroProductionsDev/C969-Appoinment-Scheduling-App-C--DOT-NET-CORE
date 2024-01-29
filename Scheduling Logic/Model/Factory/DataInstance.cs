@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Scheduling_Logic.Model.Structure;
-using Scheduling_Logic.Model.Data;
+﻿using Scheduling_Logic.Model.Data;
 using Scheduling_Logic.Model.Database;
+using Scheduling_Logic.Model.Structure;
+using System.Data;
 
 namespace Scheduling_Logic.Model.Factory
 {
@@ -37,11 +32,12 @@ namespace Scheduling_Logic.Model.Factory
          */
         public static DbDataSet CreateDbDataTable(DbConnector? dbConnector, DbSchema? dbSchema)
         {
-             return new DbDataSet(dbConnector, dbSchema);
+            return new DbDataSet(dbConnector, dbSchema);
         }
 
-        internal static DataSet createDataSet(string dtSetName) { 
-            return new DataSet(dtSetName); 
+        internal static DataSet CreateDataSet(string dtSetName)
+        {
+            return new DataSet(dtSetName);
         }
     }
 }

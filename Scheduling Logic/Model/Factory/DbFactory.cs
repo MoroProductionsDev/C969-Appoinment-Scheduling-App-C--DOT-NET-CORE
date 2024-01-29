@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MySql.Data.MySqlClient;
+﻿using MySql.Data.MySqlClient;
 using Scheduling_Logic.Model.Config;
+using System.Data.Common;
 
 namespace Scheduling_Logic.Model.Factory
 {
@@ -17,7 +11,7 @@ namespace Scheduling_Logic.Model.Factory
             DbProviderFactory? dbProviderFactory = null;
 
             if (config?.GetType() == typeof(MySqlConfig))
-            {   
+            {
                 dbProviderFactory = MySqlClientFactory.Instance;
             }
 

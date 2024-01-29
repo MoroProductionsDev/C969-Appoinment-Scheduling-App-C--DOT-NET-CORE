@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Scheduling_Logic.Model.Config
+﻿namespace Scheduling_Logic.Model.Config
 {
-    //
+    // Interface to has the basics requirements for database configurations.
     public interface IDbConfig
     {
         string ConnectionString { get; }

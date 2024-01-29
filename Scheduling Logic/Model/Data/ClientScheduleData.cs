@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Scheduling_Logic.Model.Data
+﻿namespace Scheduling_Logic.Model.Data
 {
-    public sealed class ClientScheduleRecord
+    // Class that have the types of each client's schedule database record type on the system
+    public sealed class ClientScheduleData
     {
         public class UserRecord
         {

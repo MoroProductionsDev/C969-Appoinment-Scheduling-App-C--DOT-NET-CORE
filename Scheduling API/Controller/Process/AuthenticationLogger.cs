@@ -1,15 +1,10 @@
 ﻿using Scheduling_API.Controller.State;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Scheduling_API.Controller.Process
 {
-    internal class AuthenticationLogger
+    // It logs data when the user has succesfully authenticated.
+    internal sealed class AuthenticationLogger
     {
         const int rootAppPathDirectoryLevels = 4;
         private static readonly string parentDirector = $"..{Path.DirectorySeparatorChar}";
@@ -17,8 +12,8 @@ namespace Scheduling_API.Controller.Process
         const string fileName = $"authentication_logs.txt";
         private readonly string directoryRelativePath;
         private readonly string fileRelativePath;
-        private FileStream fileStream;
-        private StreamWriter fileWriter;
+        private readonly FileStream fileStream;
+        private readonly StreamWriter fileWriter;
 
         internal AuthenticationLogger()
         {
@@ -31,12 +26,13 @@ namespace Scheduling_API.Controller.Process
             this.fileWriter = new StreamWriter(fileStream);
         }
 
-        ~AuthenticationLogger() { 
+        ~AuthenticationLogger()
+        {
             fileWriter.Close();
-            fileWriter.DisposeAsync();
+            fileWriter.Dispose();
 
             fileStream.Close();
-            fileStream.DisposeAsync();
+            fileStream.Dispose();
         }
 
         internal void WriteLog(AppState appState)
@@ -52,9 +48,9 @@ namespace Scheduling_API.Controller.Process
                         fileWriter.WriteLineAsync(new string('-', 86));
                     }
 
-                    fileWriter.WriteLineAsync(String.Format("{0, -20} | {1, -20} | {2, -15} {3, -15}", 
-                                                appState.AppData.UserRecord.UserName, 
-                                                DateTime.Now.ToShortDateString(), 
+                    fileWriter.WriteLineAsync(String.Format("{0, -20} | {1, -20} | {2, -15} {3, -15}",
+                                                appState.AppData.UserRecord.UserName,
+                                                DateTime.Now.ToShortDateString(),
                                                 DateTime.Now.ToLocalTime().ToShortTimeString(),
                                                 $"{DateTime.Now.Second} sec"));
 

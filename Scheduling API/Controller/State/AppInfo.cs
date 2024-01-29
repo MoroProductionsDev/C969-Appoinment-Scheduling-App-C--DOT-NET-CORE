@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
-namespace Scheduling_API.Controller.State
+﻿namespace Scheduling_API.Controller.State
 {
+    // Specific information for this project App.config class needed to fetch and
+    // configure the database components.
     public static class AppInfo
     {
         public const string MySqlClientNameSpace = "MySql.Data.MySqlClient";

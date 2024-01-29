@@ -117,10 +117,216 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="userNameToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>311, 17</value>
-  </metadata>
+  <data name="signInBtn.ToolTip1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="userNameTxtBox.ToolTip1" xml:space="preserve">
+    <value />
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="userNameLbl.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="signInBtn.Text" xml:space="preserve">
+    <value>Sign In</value>
+  </data>
+  <data name="userNameLbl.ToolTip1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;userNameTxtBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>7, 15</value>
+  </data>
+  <data name="userNameLbl.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="userNameLbl.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="userNameLbl.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleCenter</value>
+  </data>
+  <data name="userNameTxtBox.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;passwordLbl.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="passwordLbl.Location" type="System.Drawing.Point, System.Drawing">
+    <value>156, 89</value>
+  </data>
+  <data name="&gt;&gt;signInBtn.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="userNameLbl.Text" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="userNameLbl.Size" type="System.Drawing.Size, System.Drawing">
+    <value>57, 15</value>
+  </data>
+  <data name="&gt;&gt;passwordLbl.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;passwordTxtBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="signInBtn.Size" type="System.Drawing.Size, System.Drawing">
+    <value>60, 25</value>
+  </data>
+  <data name="&gt;&gt;signInBtn.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
+    <value>382, 215</value>
+  </data>
+  <data name="&gt;&gt;passwordLbl.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="$this.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="passwordLbl.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="passwordTxtBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 23</value>
+  </data>
+  <data name="&gt;&gt;passwordTxtBox.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;userNameTxtBox.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;userNameLbl.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="passwordTxtBox.MaxLength" type="System.Int32, mscorlib">
+    <value>254</value>
+  </data>
+  <data name="userNameTxtBox.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 23</value>
+  </data>
+  <data name="signInBtn.Location" type="System.Drawing.Point, System.Drawing">
+    <value>154, 141</value>
+  </data>
+  <data name="passwordLbl.ToolTip1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;userNameToolTip.Name" xml:space="preserve">
+    <value>userNameToolTip</value>
+  </data>
+  <data name="&gt;&gt;signInBtn.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="passwordTxtBox.ToolTip1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="userNameTxtBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;userNameLbl.Name" xml:space="preserve">
+    <value>userNameLbl</value>
+  </data>
+  <data name="userNameTxtBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>134, 56</value>
+  </data>
+  <data name="&gt;&gt;userNameLbl.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;userNameToolTip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="userNameLbl.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>57, 15</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>LoginControl</value>
+  </data>
+  <data name="passwordLbl.Text" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="&gt;&gt;userNameLbl.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;passwordLbl.Name" xml:space="preserve">
+    <value>passwordLbl</value>
+  </data>
+  <data name="&gt;&gt;signInBtn.Name" xml:space="preserve">
+    <value>signInBtn</value>
+  </data>
+  <data name="passwordTxtBox.PasswordChar" type="System.Char, mscorlib" xml:space="preserve">
+    <value>•</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.UserControl, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="passwordTxtBox.Location" type="System.Drawing.Point, System.Drawing">
+    <value>134, 107</value>
+  </data>
+  <data name="&gt;&gt;passwordTxtBox.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="passwordLbl.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;passwordTxtBox.Name" xml:space="preserve">
+    <value>passwordTxtBox</value>
+  </data>
+  <data name="userNameTxtBox.MaxLength" type="System.Int32, mscorlib">
+    <value>36</value>
+  </data>
+  <data name="passwordTxtBox.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;passwordToolTip.Name" xml:space="preserve">
+    <value>passwordToolTip</value>
+  </data>
+  <data name="passwordLbl.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="&gt;&gt;userNameTxtBox.Name" xml:space="preserve">
+    <value>userNameTxtBox</value>
+  </data>
+  <data name="passwordTxtBox.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="$this.ToolTip1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="passwordLbl.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleCenter</value>
+  </data>
+  <data name="signInBtn.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="signInBtn.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="userNameLbl.Location" type="System.Drawing.Point, System.Drawing">
+    <value>156, 38</value>
+  </data>
+  <data name="passwordLbl.Size" type="System.Drawing.Size, System.Drawing">
+    <value>57, 15</value>
+  </data>
+  <data name="&gt;&gt;passwordToolTip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;userNameTxtBox.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <metadata name="passwordToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>457, 17</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, System.Private.CoreLib, Culture=neutral, PublicKeyToken=7cec85d7bea7798e">
+    <value>zh</value>
+  </metadata>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="userNameToolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>311, 17</value>
   </metadata>
 </root>

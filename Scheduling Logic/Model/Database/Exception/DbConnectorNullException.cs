@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Scheduling_Logic.Model.Database
+﻿namespace Scheduling_Logic.Model.Database
 {
     internal class DbConnectorNullException : Exception
     {
+        // User defined excpetion to validate the database classes on the [Database] folder
+        internal DbConnectorNullException() { }
+
         internal DbConnectorNullException(string message)
             : base(message) { }
 

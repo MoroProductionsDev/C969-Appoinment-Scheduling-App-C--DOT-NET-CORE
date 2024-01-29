@@ -1,25 +1,15 @@
-﻿using Google.Protobuf.WellKnownTypes;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.ComponentModel;
 
 namespace Scheduling_UI_Library
 {
+    // It displays a loading spinning wheel with the loading text animations.
     public partial class LoadingControl : UserControl
     {
-        public const string ControlName = nameof(LoadingControl);
-        private event CancelEventHandler onSpinnerAnimation;
-        private event CancelEventHandler onLoadingTextAnimation;
-        private CancelEventArgs cancelE;
+        private event CancelEventHandler OnSpinnerAnimation;
+        private event CancelEventHandler OnLoadingTextAnimation;
+        private readonly CancelEventArgs cancelE;
 
-        Bitmap[] spinnerStageMap = new Bitmap[]
+        private readonly Bitmap[] spinnerStageMap = new[]
         {
             Properties.Resources.spinner_frame__1_,
             Properties.Resources.spinner_frame__2_,
@@ -56,8 +46,8 @@ namespace Scheduling_UI_Library
         {
             InitializeComponent();
 
-            this.onSpinnerAnimation += StartSpinnerAnimation!;
-            this.onLoadingTextAnimation += StartLoadingTextAnimation!;
+            this.OnSpinnerAnimation += StartSpinnerAnimation!;
+            this.OnLoadingTextAnimation += StartLoadingTextAnimation!;
             this.cancelE = new CancelEventArgs();
         }
 
@@ -66,14 +56,14 @@ namespace Scheduling_UI_Library
             if (loading)
             {
                 this.cancelE.Cancel = false;
-                this.onSpinnerAnimation.Invoke(this, cancelE);
-                this.onLoadingTextAnimation.Invoke(this, cancelE);
+                this.OnSpinnerAnimation.Invoke(this, cancelE);
+                this.OnLoadingTextAnimation.Invoke(this, cancelE);
             }
             else
             {
                 this.cancelE.Cancel = true;
-                this.onSpinnerAnimation.Invoke(this, cancelE);
-                this.onLoadingTextAnimation.Invoke(this, cancelE);
+                this.OnSpinnerAnimation.Invoke(this, cancelE);
+                this.OnLoadingTextAnimation.Invoke(this, cancelE);
             }
         }
 
@@ -105,6 +95,7 @@ namespace Scheduling_UI_Library
         private async void StartLoadingTextAnimation(object sender, CancelEventArgs e)
         {
             const int labelFrameDelayMilliseconds = 500;
+            const int MaxDotCount = 3;
             Padding labelPadding = this.loadingLbl.Padding;
             int initialLeftPadding = this.loadingLbl.Padding.Left;
 
@@ -116,10 +107,10 @@ namespace Scheduling_UI_Library
                 labelPadding.Left = initialLeftPadding;
                 this.loadingLbl.Padding = labelPadding;
 
-                for (int i = 0; i < spinnerStageMap.Length; i++)
+                for (int i = 0; i <= MaxDotCount; i++)
                 {
                     await Task.Delay(labelFrameDelayMilliseconds);
-                    
+
                     this.loadingLbl.Text += ".";
                     labelPadding.Left -= 1;
                     this.loadingLbl.Padding = labelPadding;

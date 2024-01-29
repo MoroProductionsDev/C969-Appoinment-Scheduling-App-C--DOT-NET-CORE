@@ -22,14 +22,14 @@ namespace Scheduling_UI_App.Properties {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    internal class AppBackgroundImages {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal AppBackgroundImages() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace Scheduling_UI_App.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Scheduling_UI_App.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Scheduling_UI_App.Properties.AppBackgroundImages", typeof(AppBackgroundImages).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -63,9 +63,9 @@ namespace Scheduling_UI_App.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_1_1_Square {
+        internal static System.Drawing.Bitmap _3d_background_with_white_cubes_1_1 {
             get {
-                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_1_1_Square", resourceCulture);
+                object obj = ResourceManager.GetObject("_3d_background_with_white_cubes_1_1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace Scheduling_UI_App.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_1_91_1_Landscape {
+        internal static System.Drawing.Bitmap _3d_background_with_white_cubes_16_9 {
             get {
-                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_1_91_1_Landscape", resourceCulture);
+                object obj = ResourceManager.GetObject("_3d_background_with_white_cubes_16_9", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +83,9 @@ namespace Scheduling_UI_App.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_16_9_Landscape {
+        internal static System.Drawing.Bitmap _3d_background_with_white_cubes_2_3 {
             get {
-                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_16_9_Landscape", resourceCulture);
+                object obj = ResourceManager.GetObject("_3d_background_with_white_cubes_2_3", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -93,9 +93,9 @@ namespace Scheduling_UI_App.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_2_3 {
+        internal static System.Drawing.Bitmap _3d_background_with_white_cubes_3_2 {
             get {
-                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_2_3", resourceCulture);
+                object obj = ResourceManager.GetObject("_3d_background_with_white_cubes_3_2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -103,9 +103,9 @@ namespace Scheduling_UI_App.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_3_2 {
+        internal static System.Drawing.Bitmap _3d_background_with_white_cubes_4_3 {
             get {
-                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_3_2", resourceCulture);
+                object obj = ResourceManager.GetObject("_3d_background_with_white_cubes_4_3", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +113,9 @@ namespace Scheduling_UI_App.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_4_3 {
+        internal static System.Drawing.Bitmap _3d_background_with_white_cubes_4_5 {
             get {
-                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_4_3", resourceCulture);
+                object obj = ResourceManager.GetObject("_3d_background_with_white_cubes_4_5", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,19 +123,9 @@ namespace Scheduling_UI_App.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_4_5_Portrait {
+        internal static System.Drawing.Bitmap _3d_background_with_white_cubes_9_16 {
             get {
-                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_4_5_Portrait", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap Section_099_ThankYou_BG_Img_Ornament_Ratio_9_16_Story {
-            get {
-                object obj = ResourceManager.GetObject("Section_099_ThankYou_BG_Img_Ornament_Ratio_9_16_Story", resourceCulture);
+                object obj = ResourceManager.GetObject("_3d_background_with_white_cubes_9_16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -1,47 +1,43 @@
-﻿using System;
+﻿using System.Runtime.InteropServices;
 using System.Text;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 
 namespace Scheduling_UI_App.UI_StyleUtility
 {
+    // Class use to center MessageBox components in the center of the displaying form.
     // https://stackoverflow.com/questions/2576156/winforms-how-can-i-make-messagebox-appear-centered-on-mainform
     internal class CenterWinDialog : IDisposable
     {
         private int mTries = 0;
-        private Control mOwner;
+        private readonly Control mOwner;
 
         public CenterWinDialog(Control owner)
         {
             mOwner = owner;
-            owner.BeginInvoke(new MethodInvoker(findDialog));
+            owner.BeginInvoke(new MethodInvoker(FindDialog));
         }
 
-        private void findDialog()
+        private void FindDialog()
         {
             // Enumerate windows to find the message box
             if (mTries < 0)
                 return;
-            EnumThreadWndProc callback = new EnumThreadWndProc(checkWindow);
+            EnumThreadWndProc callback = new(CheckWindow);
             if (EnumThreadWindows(GetCurrentThreadId(), callback, IntPtr.Zero))
             {
                 if (++mTries < 10)
-                    mOwner.BeginInvoke(new MethodInvoker(findDialog));
+                    mOwner.BeginInvoke(new MethodInvoker(FindDialog));
             }
         }
-        private bool checkWindow(IntPtr hWnd, IntPtr lp)
+        private bool CheckWindow(IntPtr hWnd, IntPtr lp)
         {
             // Checks if <hWnd> is a dialog
-            StringBuilder sb = new StringBuilder(260);
+            StringBuilder sb = new(260);
             GetClassName(hWnd, sb, sb.Capacity);
             if (sb.ToString() != "#32770")
                 return true;
             // Got it
-            Rectangle frmRect = new Rectangle(mOwner.Location, mOwner.Size);
-            RECT dlgRect;
-            GetWindowRect(hWnd, out dlgRect);
+            Rectangle frmRect = new(mOwner.Location, mOwner.Size);
+            GetWindowRect(hWnd, out RECT dlgRect);
             MoveWindow(hWnd,
                 frmRect.Left + (frmRect.Width - dlgRect.Right + dlgRect.Left) / 2,
                 frmRect.Top + (frmRect.Height - dlgRect.Bottom + dlgRect.Top) / 2,

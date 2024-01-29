@@ -1,28 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using Scheduling_UI_Library.UI_Validator;
-using Scheduling_API.Controller;
+﻿using Scheduling_API.Controller;
 using Scheduling_API.Controller.State;
-using System.Net.NetworkInformation;
-
+using Scheduling_UI_App.UI_Process;
+using Scheduling_UI_Library.UI_Validator;
 
 namespace Scheduling_UI_Library
 {
+    // The loging control for the user to log.
     public partial class LoginControl : UserControl
     {
-        public const string ControlName = nameof(LoginControl);
-        public bool authenticated = false;
+        public const string SignInBtnName = nameof(signInBtn);
+        public const string UserNameTxtBoxName = nameof(userNameTxtBox);
+        public const string PasswordTxtBoxName = nameof(passwordTxtBox);
+        public bool UI_AuthenticationAttempt { private set; get; } = false;
 
         const int ToolTipTimeDisplayed = 5000;
-        private AppState? _appState;
 
         public LoginControl()
         {
@@ -30,26 +21,18 @@ namespace Scheduling_UI_Library
             InitializeComponent();
         }
 
-        public AppState? AppState
+        public void InitComponents()
         {
-            set
-            {
-                if (value is not null && _appState is null)
-                {
-                    this._appState = value;
-                }
-            }
-            get
-            {
-                return _appState;
-            }
+            userNameToolTip.Dispose();
+            passwordToolTip.Dispose();
+            InitializeComponent();
         }
 
         // https://stackoverflow.com/questions/42535141/winform-tooltip-location-setting
         protected void OnTxtBoxLostFocus(object sender, EventArgs args)
         {
             TextBox txtBox = (TextBox)sender;
-            string errorMsg = LoginControlValidator.ValidateUserNameTxtBox(txtBox);
+            string errorMsg = ControlValidator.ValidateTxtBox(txtBox);
 
             if (txtBox.Name.Equals(userNameTxtBox.Name))
             {
@@ -61,20 +44,22 @@ namespace Scheduling_UI_Library
             }
         }
 
-        private void signInBtn_Click(object sender, EventArgs e)
+        private void SignInBtn_Click(object sender, EventArgs e)
         {
-            AppState.StaticValidateAppStateForNull(this._appState);
+            AppState.StaticValidateAppStateForNull(UIState.State);
+            UI_AuthenticationAttempt = false;
 
-            if (!String.IsNullOrEmpty(userNameTxtBox.Text) ||
-                !String.IsNullOrEmpty(passwordTxtBox.Text))
+            if (String.IsNullOrEmpty(userNameTxtBox.Text) ||
+                String.IsNullOrEmpty(passwordTxtBox.Text))
             {
-                this._appState!.AppData.UserRecord.UserName = userNameTxtBox.Text.Trim();
-                this._appState!.AppData.UserRecord.Password = passwordTxtBox.Text.Trim();
-
-                AppController.AuthenticateLogIn(this._appState);
-
-                this.authenticated = this._appState.Authenticated;
+                return;
             }
+
+            UIState.State!.AppData.UserRecord.UserName = userNameTxtBox.Text.Trim();
+            UIState.State!.AppData.UserRecord.Password = passwordTxtBox.Text.Trim();
+
+            AppController.AuthenticateLogIn(UIState.State);
+            UI_AuthenticationAttempt = true;
         }
     }
 }

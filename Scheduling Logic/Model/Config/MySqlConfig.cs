@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 
 namespace Scheduling_Logic.Model.Config
 {
+    // MySQl database class configuration
     public sealed class MySqlConfig : IDbConfig
     {
         private const string connectionStringName = "MySqlDBConn";

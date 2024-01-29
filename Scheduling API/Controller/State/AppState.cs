@@ -1,45 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.NetworkInformation;
-using System.Data;
-using Scheduling_Logic.Model.Structure;
+﻿using Scheduling_API.Controller.Factory;
+using Scheduling_API.Controller.Process;
+using Scheduling_API.Controller.Validate;
+using Scheduling_Logic.Model.Config;
 using Scheduling_Logic.Model.Data;
 using Scheduling_Logic.Model.Database;
-using Scheduling_Logic.Model.Config;
-using Scheduling_API.Controller.Factory;
-using Scheduling_API.Controller.Validate;
-using Scheduling_API.Controller.Process;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Configuration;
 using Scheduling_Logic.Model.NetWork;
+using Scheduling_Logic.Model.Structure;
+using System.Runtime.CompilerServices;
 
 namespace Scheduling_API.Controller.State
 {
+    // Store the overall state of specific structure that will be required all around the
+    // application's lifetime.
     public sealed class AppState
     {
-        private readonly AuthenticationLogger authLogger;
+        private AuthenticationLogger? authLogger;
         public bool Authenticated { get; private set; }
         public string Location { get; private set; } = String.Empty;
         public string TimeZone { get; private set; } = String.Empty;
         public AppData AppData { get; private set; }
+        public AppDataView AppDataView { get; private set; }
         public DbSchema DbSchema { get; private set; }
         public DbConnector DbConnector { get; private set; }
         public DbDataSet DbDataSet { get; private set; }
-        internal Exception? AppException { get; private set; }
+        public Exception? AppException { get; private set; }
         public Report Report { get; private set; }
+
+        public List<int> UpcomingAppointmentIds = new();
+        public List<int> UpcomingAppointmentRemainingMinutes = new();
+
+        public int SelectedId { get; private set; } = -1;
 
         internal AppState(IDbConfig? dbConfig, string dbName)
         {
             ValidateForNullParamater(dbConfig, nameof(dbConfig));
             ValidateForNullParamater(dbName, nameof(dbName));
-
-            this.AppData = AppFactory.BuildAppData(dbName)!;
-            ValidateForNullClassVariable(this.AppData, nameof(this.AppData));
 
             this.DbSchema = AppFactory.BuildDbSchema(dbName)!;
             ValidateForNullClassVariable(this.DbSchema, nameof(this.DbSchema));
@@ -50,7 +45,12 @@ namespace Scheduling_API.Controller.State
             this.DbDataSet = AppFactory.BuildDatabaseDataSet(this)!;
             ValidateForNullClassVariable(this.DbDataSet, nameof(this.DbDataSet));
 
-            authLogger = new AuthenticationLogger();
+            this.AppData = AppFactory.BuildAppData(dbName)!;
+            ValidateForNullClassVariable(this.AppData, nameof(this.AppData));
+
+            this.AppDataView = AppFactory.BuildAppDataView(this, dbName)!;
+            ValidateForNullClassVariable(this.AppDataView, nameof(this.AppDataView));
+
             Report = new Report(this.DbDataSet.DataSet);
         }
 
@@ -62,20 +62,43 @@ namespace Scheduling_API.Controller.State
                     $"[{callerName}][{nameof(controlAppState)}] cannot be null.");
             }
         }
+
+        public void ClearAppException()
+        {
+            this.AppException = null;
+        }
+
+        public void NewUnauthorizedAccessException(string message)
+        {
+            this.AppException = new UnauthorizedAccessException(message);
+        }
+
         internal void Authenticate()
         {
-            Authenticated = Validator.CheckCredentials(this);
+            this.Authenticated = Validator.CheckCredentials(this);
 
             if (Authenticated)
             {
-                authLogger.WriteLog(this);
+                this.authLogger = new AuthenticationLogger();
+                this.authLogger.WriteLog(this);
+
                 AppointmentReminder.AlertUserMin(this);
             }
         }
 
+        internal void UnAuthenticate()
+        {
+            this.Authenticated = false;
+        }
+
+        internal void StoredFetchedId(int id)
+        {
+            this.SelectedId = id;
+        }
+
         internal void ValidateAppointment()
         {
-            Validator.CheckTimeIsOnBusinnesHours(this.AppData.AppointmentRecord);
+            Validator.ValidateOutsideBusinessHours(this.AppData.AppointmentRecord);
             // Validator.CheckForOverlappingAppointment(this, this.AppData.AppointmentRecord);
         }
 
@@ -93,7 +116,7 @@ namespace Scheduling_API.Controller.State
             }
         }
 
-        private void ValidateForNullParamater(object? param, string paramName, [CallerMemberName] string callerName = "")
+        private static void ValidateForNullParamater(object? param, string paramName, [CallerMemberName] string callerName = "")
         {
             if (param is null)
             {
@@ -103,7 +126,7 @@ namespace Scheduling_API.Controller.State
             }
         }
 
-        private void ValidateForNullClassVariable(object? variable, string variableName, [CallerMemberName] string callerName = "")
+        private static void ValidateForNullClassVariable(object? variable, string variableName, [CallerMemberName] string callerName = "")
         {
             if (variable is null)
             {

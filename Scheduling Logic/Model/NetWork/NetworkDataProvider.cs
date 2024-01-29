@@ -1,32 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Net;
-using System.Runtime;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Scheduling_Logic.Model.NetWork
+﻿namespace Scheduling_Logic.Model.NetWork
 {
+    // Gets the project data required from API's client request
     public static class NetworkDataProvider
     {
-        private readonly static HttpClient client = new HttpClient();
-        private readonly static string ipInfoApiToken = "YOUR IP INFO API KEY";
+        private readonly static HttpClient client = new();
+        private readonly static string ipInfoApiToken = "YOUR API KEY";
         private static string userIp = String.Empty;
         private const string ipUri = "http://ifconfig.me";
 
         public static async void GetUserIp()
         {
-            userIp = (await client.GetStringAsync(ipUri)).ToString();
+            userIp = (await client.GetStringAsync(ipUri)).ToString(); // this can throw - not being catch for now.
         }
 
         public static string GetUserLocation()
         {
-            string result = String.Empty;
-            string location = String.Empty;
+            string result;
+            string location = string.Empty;
 
-            if (userIp == String.Empty)
+            if (userIp == string.Empty)
             {
                 GetUserIp();
             }
@@ -43,10 +35,10 @@ namespace Scheduling_Logic.Model.NetWork
 
         public static string GetUserTimeZone()
         {
-            string result = String.Empty;
-            string timeZone = String.Empty;
+            string result;
+            string timeZone = string.Empty;
 
-            if (userIp == String.Empty)
+            if (userIp == string.Empty)
             {
                 GetUserIp();
             }

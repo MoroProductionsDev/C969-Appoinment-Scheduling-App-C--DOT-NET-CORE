@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Scheduling_Logic.Model.Data
+﻿namespace Scheduling_Logic.Model.Data
 {
+    // User defined excpetion to validate the data classes on the [Data] folder
     internal class DataClassNullException : Exception
     {
         internal DataClassNullException() { }

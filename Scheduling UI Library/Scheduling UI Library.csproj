@@ -9,6 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="UI-EventHandler\**" />
+    <EmbeddedResource Remove="UI-EventHandler\**" />
+    <None Remove="UI-EventHandler\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Scheduling API\Scheduling API.csproj" />
   </ItemGroup>
 
@@ -18,6 +24,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="ScheduleDateTimePickerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -25,10 +34,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="UI-EventHandler\" />
   </ItemGroup>
 
 </Project>
